@@ -1,7 +1,7 @@
 {
-  "name": "monitoring-wifi-activity",
+  "name": "file-transfer",
   "version": "1.0.0",
-  "description": "Monitoring WIFI activity",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "server": "nodemon index.js"
