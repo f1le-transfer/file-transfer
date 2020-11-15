@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon index.js"
+    "server": "bash bin/run_server.sh"
   },
   "author": "loveyousomuch554@gmail.com",
   "license": "ISC",
