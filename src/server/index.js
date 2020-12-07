@@ -14,4 +14,9 @@ app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
 
+// Routers
+const { fileRouter } = require('./routes/file')
+
+app.use('/file', fileRouter)
+
 app.listen(process.env.PORT)
