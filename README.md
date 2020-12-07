@@ -1,6 +1,6 @@
 <h3>
   There will be a service with the ability to transfer data from one device to another. <br/>
-  Full description later... <br/>
+  Full description later...<br/>
 </h3>
 <pre>
  ___             __                   
