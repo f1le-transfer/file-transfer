@@ -5,7 +5,7 @@ require('dotenv').config({ path: path.join(__dirname, 'config', '.env') })
 const app = express()
 
 // Connect to mongodb
-require('./loaders/index')
+require('./loaders/mongo')
 
 app.use(require('cors')()) // Cors for testing API
 app.use(bodyParser.json())
