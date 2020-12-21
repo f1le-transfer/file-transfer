@@ -4,7 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "bash bin/run_server.sh"
+    "server": "node build-server/index.js",
+    "transpile": "babel ./src/server --out-dir build-server",
+    "clean": "rimraf ./build-server",
+    "build": "sh bin/run-all.sh clean transpile",
+    "dev": "NODE_ENV=development sh bin/run-all.sh build server",
+    "prod": "NODE_ENV=production sh bin/run-all.sh build server",
+    "start": "npm run prod",
+    "watch:dev": "nodemon"
+  },
+  "nodemonConfig": {
+    "exec": "npm run dev",
+    "watch": [
+      "src/*"
+    ],
+    "ignore": [
+      "**/__tests__/**",
+      "*.test.js",
+      "*.spec.js"
+    ]
   },
   "author": "loveyousomuch554@gmail.com",
   "license": "ISC",
@@ -16,6 +34,10 @@
     "multer": "^1.4.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "nodemon": "^2.0.6",
+    "rimraf": "^3.0.2"
   }
 }

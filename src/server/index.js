@@ -1,7 +1,7 @@
 const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
-require('dotenv').config({ path: path.join(__dirname, 'config', '.env') })
+require('dotenv').config({ path: path.join(__dirname, '..', 'src', 'server', 'config', '.env') })
 const app = express()
 
 // Connect to mongodb
