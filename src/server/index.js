@@ -17,9 +17,11 @@ app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
 
-// Routers
-import fileRouter from './routes/files.route';
+// Routes
+import files from './routes/files.route';
+import users from './routes/users.route';
 
-app.use('/file', fileRouter)
+app.use('/file', files)
+app.use('/user', users)
 
 app.listen(process.env.PORT)
