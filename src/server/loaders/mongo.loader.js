@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb')
+import { MongoClient } from 'mongodb';
 
 const client = new MongoClient(process.env.MongoDB, { useUnifiedTopology: true })
 

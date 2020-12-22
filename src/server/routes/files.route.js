@@ -1,8 +1,9 @@
-const Router = require('express').Router()
-const { FileController } = require('../controllers/files.controller')
+import { Router } from 'express';
+import FileController from '../controllers/files.controller';
+const _Router = Router()
 
-Router.post('/', (req, res) => {
+_Router.post('/', (req, res) => {
   new FileController(req, res).save()
 })
 
-exports.fileRouter = Router
+export default Router

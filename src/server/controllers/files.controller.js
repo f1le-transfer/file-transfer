@@ -1,4 +1,4 @@
-class FileController {
+export default class FileController {
   constructor(req, res) {
     this.req = req
     this.res = res
@@ -8,5 +8,3 @@ class FileController {
     this.res.sendStatus(200)
   }
 }
-
-exports.FileController = FileController

@@ -1,13 +1,16 @@
-const path = require('path')
-const express = require('express')
-const bodyParser = require('body-parser')
-require('dotenv').config({ path: path.join(__dirname, '..', 'src', 'server', 'config', '.env') })
-const app = express()
+import path from 'path';
+import express from 'express';
+import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
+dotenv.config({ path: path.join(__dirname, '..', 'src', 'server', 'config', '.env') })
+const app = express();
 
-// Connect to mongodb
-require('./loaders/mongo.loader')
+// Connect mongoDB
+import('./loaders/mongo.loader')
 
-app.use(require('cors')()) // Cors for testing API
+import cors from 'cors';
+app.use(cors()) // Cors for testing API
+
 app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
@@ -15,7 +18,7 @@ app.get('/', (req, res) => {
 })
 
 // Routers
-const { fileRouter } = require('./routes/files.route')
+import fileRouter from './routes/files.route';
 
 app.use('/file', fileRouter)
 
