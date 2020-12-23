@@ -11,7 +11,4 @@
   \ \_\   \ \_\/\____\\ \____\\/______/ \ \__\\ \_\\ \__/.\_\\ \_\ \_\\/\____/ \ \_\ \ \____\\ \_\ 
    \/_/    \/_/\/____/ \/____/           \/__/ \/_/ \/__/\/_/ \/_/\/_/ \/___/   \/_/  \/____/ \/_/
 </pre>
-<p hidden="true">
-Font - Larry 3D 
-taken from - http://patorjk.com/software/taag/#p=display&h=1&f=Larry%203D&t=file-transfer
-</p>
+<h4>/src/server/dao - data access object interface of database</h4> 
