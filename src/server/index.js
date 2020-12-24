@@ -2,7 +2,7 @@ import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-dotenv.config({ path: path.join(__dirname, '..', '..', 'src', 'server', 'config', '.env') })
+dotenv.config({ path: path.join(__dirname, '../../config/.env') })
 const app = express();
 
 // Connect mongoDB
