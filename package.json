@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "node build/server/index.js",
+    "server": "node build/server/server.js",
     "transpile": "babel ./src --out-dir build",
     "clean": "rimraf ./build",
     "build": "sh bin/run-all.sh clean transpile",
     "dev": "NODE_ENV=development sh bin/run-all.sh build server",
     "prod": "NODE_ENV=production sh bin/run-all.sh build server",
     "start": "npm run prod",
-    "watch:dev": "nodemon"
+    "watch:dev": "nodemon",
+    "test": "jest"
   },
   "nodemonConfig": {
     "exec": "npm run dev",
