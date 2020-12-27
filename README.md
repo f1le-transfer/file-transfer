@@ -15,6 +15,5 @@
 <h4>For testing run the following commands - </h4>
 
 ```shell
-npm run build;
 npm run test;
 ```

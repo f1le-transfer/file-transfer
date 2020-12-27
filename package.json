@@ -12,7 +12,7 @@
     "prod": "NODE_ENV=production sh bin/run-all.sh build server",
     "start": "npm run prod",
     "watch:dev": "nodemon",
-    "test": "jest"
+    "test": "npm run build; jest"
   },
   "nodemonConfig": {
     "exec": "npm run dev",
