@@ -1,5 +1,5 @@
 module.exports = async function() {
-  console.log("\nTeardown Mongo Connection")
+  console.log("\nTeardown Mongo Connection\n")
 
   // Remove global variable
   delete global.fileTransferClient
