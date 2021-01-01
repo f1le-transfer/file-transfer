@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 import files from './routes/files.route';
 import users from './routes/users.route';
 
-app.use('/file', files)
-app.use('/user', users)
+app.use('/files', files)
+app.use('/users', users)
 
 export default app
