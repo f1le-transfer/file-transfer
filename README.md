@@ -1,7 +1,3 @@
-<h3>
-  There will be a service with the ability to transfer data from one device to another. <br/>
-  Full description later...<br/>
-</h3>
 <pre>
    ___       ___                      __                                        ___                
  /'___\  __ /\_ \                    /\ \__                                   /'___\               
@@ -11,9 +7,10 @@
   \ \_\   \ \_\/\____\\ \____\\/______/ \ \__\\ \_\\ \__/.\_\\ \_\ \_\\/\____/ \ \_\ \ \____\\ \_\ 
    \/_/    \/_/\/____/ \/____/           \/__/ \/_/ \/__/\/_/ \/_/\/_/ \/___/   \/_/  \/____/ \/_/
 </pre>
-<h4>/src/server/dao - data access object interface of database</h4>
-<h4>For testing run the following commands - </h4>
+<p>For testing run the following commands</p>
 
 ```shell
 npm run test;
 ```
+<p>Documentation will be updated</p>
+<p>btw happy new year</p>
