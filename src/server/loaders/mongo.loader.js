@@ -1,5 +1,10 @@
 import { MongoClient } from 'mongodb';
+import UsersDAO from '../dao/users.dao';
 
-const client = new MongoClient(process.env.MongoDB, { useUnifiedTopology: true })
+const client = new MongoClient(process.env.db_uri, { useUnifiedTopology: true })
 
-client.connect().catch(console.log)
+client.connect()
+ .then( async (client) => {
+   await UsersDAO.injectDB(client)
+ })
+ .catch(console.log)
