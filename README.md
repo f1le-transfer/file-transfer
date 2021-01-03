@@ -7,10 +7,15 @@
   \ \_\   \ \_\/\____\\ \____\\/______/ \ \__\\ \_\\ \__/.\_\\ \_\ \_\\/\____/ \ \_\ \ \____\\ \_\ 
    \/_/    \/_/\/____/ \/____/           \/__/ \/_/ \/__/\/_/ \/_/\/_/ \/___/   \/_/  \/____/ \/_/
 </pre>
-<p>For testing run the following commands</p>
+<p>For testing with all logs run the following commands</p>
 
 ```shell
 npm run test;
 ```
+Without logs:
+```shell
+npm run test -- --silent
+```
+
 <p>Documentation will be updated</p>
 <p>btw happy new year</p>
