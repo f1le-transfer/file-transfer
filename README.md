@@ -7,15 +7,28 @@
   \ \_\   \ \_\/\____\\ \____\\/______/ \ \__\\ \_\\ \__/.\_\\ \_\ \_\\/\____/ \ \_\ \ \____\\ \_\ 
    \/_/    \/_/\/____/ \/____/           \/__/ \/_/ \/__/\/_/ \/_/\/_/ \/___/   \/_/  \/____/ \/_/
 </pre>
-<p>For testing with all logs run the following commands</p>
+
+### Info
+<p>Documentation will be updated.</p>
+<p>btw happy new year</p>
+
+### Testing
+<p>For testing with logs run the following commands:</p>
 
 ```shell
-npm run test;
+npm run test
 ```
 Without logs:
 ```shell
 npm run test -- --silent
 ```
 
-<p>Documentation will be updated</p>
-<p>btw happy new year</p>
+### Server
+Run server:     
+```shell
+npm run prod
+````
+Dev server: 
+```shell
+npm run watch:dev
+```
