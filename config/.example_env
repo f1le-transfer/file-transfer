@@ -7,3 +7,6 @@ db_name="prod_db_name_..."
 # Database for testing
 db_uri_test="mongodb://myDBReader:D1fficultP%40ssw0rd@mongodb0.example.com:27017/?authSource=admin"
 db_name_test="test_db_name"
+
+# A string, buffer, or object containing either the secret for HMAC algorithms or the PEM encoded private key for RSA and ECDSA.
+SECRET_KEY="secret"
