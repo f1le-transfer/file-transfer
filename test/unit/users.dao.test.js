@@ -97,7 +97,7 @@ describe('User DAO', () => {
       expect(not_deleted_user.success).toBeUndefined()
 
       /* It returns error trying to add session with another type of filed */
-      const validation_test = await UsersDAO.loginUser(_session.wrong)
+      const validation_test = await UsersDAO.loginUser(_session.wrong.username, _session.wrong.jwt)
       expect(validation_test.error.message).toBe('Document failed validation')
     })
   })
@@ -107,13 +107,13 @@ describe('User DAO', () => {
 
     test('it should add and update user session', async () => {
       /* Add user */
-      const session = await UsersDAO.loginUser(_session.test)
+      const session = await UsersDAO.loginUser(_session.test.username, _session.test.jwt)
 
       expect(session.success).toBeTruthy()
       expect(session.error).toBeUndefined()
 
       /* Returns an updated session instead of a new one */
-      const is_session_updated = await UsersDAO.loginUser(_session.test)
+      const is_session_updated = await UsersDAO.loginUser(_session.test.username, _session.test.jwt)
 
       expect(is_session_updated.success).toBeTruthy()
       expect(is_session_updated.error).toBeUndefined()
@@ -149,7 +149,7 @@ describe('User DAO', () => {
       expect({ username, pwd }).toEqual(_user.session_user)
 
       // Create new session
-      const session = await UsersDAO.loginUser(_session.test)
+      const session = await UsersDAO.loginUser(_session.test.username, _session.test.jwt)
 
       expect(session.success).toBeTruthy()
       expect(session.error).toBeUndefined()

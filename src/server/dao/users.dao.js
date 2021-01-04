@@ -107,7 +107,7 @@ class UsersDAO {
    * @param jwt - A JSON web token representing the user's claims
    * @returns {Object} - Returns either a "success" or an "error" Object
    */
-  static async loginUser({ username, jwt }) {
+  static async loginUser(username, jwt) {
     try {
       let isUserExist = await this.getUserSession(username)
 
