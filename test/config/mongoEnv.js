@@ -4,7 +4,7 @@ const NodeEnvironment = require("jest-environment-node")
 class MongoEnvironment extends NodeEnvironment {
   async setup() {
     if (!this.global.fileTransferClient) {
-      this.global.fileTransferClient = await new MongoClient(process.env.db_uri_test, { useUnifiedTopology: true })
+      this.global.fileTransferClient = await new MongoClient(process.env.db_uri, { useUnifiedTopology: true })
         .connect()
       await super.setup()
     }
