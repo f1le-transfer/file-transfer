@@ -16,7 +16,7 @@ class UsersDAO {
       // Only creates an index if an index of the same specification
       // does not already exist.
       await users.createIndex({ username: 1 }, { unique: true })
-      await sessions.createIndex({ username: 1 }, { unique: true})
+      await sessions.createIndex({ username: 1 }, { unique: true })
 
       /**
        * At this point, do not need to check the existence of collections,
@@ -62,7 +62,7 @@ class UsersDAO {
         }
       })
     } catch(error) {
-      console.log('Unable to connect to database in users.dao.js')
+      console.error('Unable to connect to database in users.dao.js')
       console.log(error)
     }
   }
@@ -112,23 +112,23 @@ class UsersDAO {
       let isUserExist = await this.getUserSession(username)
 
       // Check if the user already exists in the `session` collection.
-      if (isUserExist == null || isUserExist.error) {
+      if (isUserExist === null || isUserExist.error) {
         let userSession = {
+          jwt: jwt,
           username: username,
-          jwt,
           created_at: new Date(),
           updated_at: new Date()
         }
         await sessions.insertOne((userSession))
       } else {
         await sessions.updateOne(
-        { username: username },
-        {
-          $set: {
-            jwt,
-            updated_at: new Date()
+          { username: username },
+          {
+            $set: {
+              jwt: jwt,
+              updated_at: new Date()
+            }
           }
-        }
         )
       }
       return { success: true }
@@ -158,6 +158,7 @@ class UsersDAO {
     } catch (error) {
       console.error('Error occurred while deleting user.')
       console.log(error)
+      
       return { error }
     }
   }
