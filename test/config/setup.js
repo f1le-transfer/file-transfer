@@ -1,4 +1,5 @@
-require('dotenv').config({ path:  `${__dirname}/../../config/.env'`})
+// Set env variables
+import '../../config/index';
 
 module.exports = async function() {
   require('../../build/server/server')

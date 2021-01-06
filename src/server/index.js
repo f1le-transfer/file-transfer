@@ -1,8 +1,7 @@
-import path from 'path';
+// Set env variables
+import '../../config/index';
 import express from 'express';
 import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
-dotenv.config({ path: path.join(__dirname, '../../config/.env') })
 const app = express();
 
 import cors from 'cors';
