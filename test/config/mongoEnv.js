@@ -14,10 +14,6 @@ class MongoEnvironment extends NodeEnvironment {
     await this.global.fileTransferClient.close()
     await super.teardown()
   }
-
-  runScript(script) {
-    return super.runScript(script)
-  }
 }
 
 module.exports = MongoEnvironment

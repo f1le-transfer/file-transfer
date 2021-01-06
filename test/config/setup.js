@@ -1,8 +1,9 @@
 // Set env variables
 import '../../config/index';
 
-module.exports = async function() {
-  require('../../build/server/server')
+export default async function() {
+  // Start server
+  import('../../build/server/server')
 
   /*
   * Rewriting standard variables for tests.
