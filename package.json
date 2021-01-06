@@ -16,7 +16,7 @@
     "start": "npm run prod",
     "watch:dev": "nodemon",
     "pretest": "npm run build",
-    "test": "jest"
+    "test": "jest --config test/config/jest.config.js"
   },
   "nodemonConfig": {
     "exec": "npm run dev",
