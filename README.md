@@ -7,7 +7,7 @@
   \ \_\   \ \_\/\____\\ \____\\/______/ \ \__\\ \_\\ \__/.\_\\ \_\ \_\\/\____/ \ \_\ \ \____\\ \_\ 
    \/_/    \/_/\/____/ \/____/           \/__/ \/_/ \/__/\/_/ \/_/\/_/ \/___/   \/_/  \/____/ \/_/
 </pre>
-
+![CodeQL](https://github.com/loveyousomuch554/file-transfer/workflows/CodeQL/badge.svg?branch=main)
 ### Info
 <p>Documentation will be updated.</p>
 <p>btw happy new year</p>
