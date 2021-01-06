@@ -33,3 +33,9 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test -- --silent
+      env:
+        PORT: ${{ secrets.PORT }}
+        db_uri_test: ${{ secrets.DB_URI_TEST }}
+        db_name_test: ${{ secrets.DB_NAME_TEST }} 
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        
