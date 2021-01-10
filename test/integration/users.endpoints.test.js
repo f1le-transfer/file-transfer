@@ -84,6 +84,13 @@ describe('Users http requests', () => {
 
       expect(res.status).toBe(200)
       expect(res_json.info).toEqual({ username: valid_user.username })
+
+      const auth_head = {
+        'Authorization': `Bearer ${res_json.token}`
+      }
+      const valid_logout = await fetch(root+'/users/logout', options(valid_user, auth_head))
+      expect(valid_logout.status).toBe(200)
+      expect(await toJSON(valid_logout)).toEqual({ success: true })
     })
 
     test('it returns error login with invalid password', async () => {
@@ -109,7 +116,7 @@ describe('Users http requests', () => {
       const auth_head = {
         'Authorization': `Bearer ${token}`
       }
-
+      
       expect(valid_login.status).toBe(200)
 
       // Logout
@@ -180,7 +187,7 @@ describe('Users http requests', () => {
       }
 
       const error_delete = await fetch(root+'/users/delete', options(invalid_user_pwd, auth_head, 'DELETE'))
-      
+
       expect(error_delete.status).toBe(401)
       expect(await toJSON(error_delete)).toEqual(verifyError)
     })
