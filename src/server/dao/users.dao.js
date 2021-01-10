@@ -1,3 +1,5 @@
+import { ObjectID } from 'mongodb';
+
 let users
 let sessions
 
@@ -42,12 +44,12 @@ class UsersDAO {
           }
         }
       })
-      
+
       await conn.db(db_name).command({
         collMod: 'sessions',
         validator: {
           $jsonSchema: {
-            required: [ 'username', 'jwt' ],
+            required: [ 'username', 'jwt', 'created_at', 'updated_at', 'last_activity' ],
             properties: {
               username: {
                 bsonType: 'string',
@@ -56,6 +58,18 @@ class UsersDAO {
               jwt: {
                 bsonType: 'string',
                 description: 'must be a string and is required'
+              },
+              created_at: {
+                bsonType: 'date',
+                description: 'must be a date and is required'
+              },
+              updated_at: {
+                bsonType: 'date',
+                description: 'must be a date and is required'
+              },
+              last_activity: {
+                bsonType: 'date',
+                description: 'must be a date and is required'
               }
             }
           }
@@ -109,29 +123,36 @@ class UsersDAO {
    */
   static async loginUser(username, jwt) {
     try {
-      let isUserExist = await this.getUserSession(username)
+      const session = await this.getUserSession(username)
+      if (session?.error) return { error: session.error }
+
+      const time = new Date()
+      let insertedId;
 
       // Check if the user already exists in the `session` collection.
-      if (isUserExist === null || isUserExist.error) {
+      if (session === null) {
         let userSession = {
           jwt: jwt,
           username: username,
-          created_at: new Date(),
-          updated_at: new Date()
-        }
-        await sessions.insertOne((userSession))
+          created_at: time,
+          updated_at: time,
+          last_activity: time
+        };
+        ({ insertedId } = await sessions.insertOne(userSession));
       } else {
         await sessions.updateOne(
           { username: username },
           {
             $set: {
               jwt: jwt,
-              updated_at: new Date()
+              updated_at: time,
+              last_activity: time
             }
           }
         )
+        insertedId = session._id
       }
-      return { success: true }
+      return { success: true, insertedId }
     } catch(error) {
       console.error('Error occurred while logging in user.')
       console.log(error)
@@ -185,13 +206,18 @@ class UsersDAO {
 
   /**
    * Gets a user session from the `sessions` collection.
-   * @param username - The username of the user to search for in `sessions`
+   * @param usernameOrId - The username or ID of the user to search for in `sessions`.
    * @returns {Object | null} - Returns a user session Object, an "error" Object
    * if something went wrong, or null if user was not found.
    */
-  static async getUserSession(username) {
+  static async getUserSession(usernameOrId) {
     try {
-      return await sessions.findOne({ username: username })
+      // Checking for mongodb id
+      if (ObjectID.isValid(usernameOrId) && /^[a-fA-F0-9]{24}$/.test(usernameOrId)) {
+        return await sessions.findOne({ _id: usernameOrId })
+      }
+      
+      return await sessions.findOne({ username: usernameOrId })
     } catch(error) {
       console.error('Error occurred while retrieving user session.')
       console.log(error)
