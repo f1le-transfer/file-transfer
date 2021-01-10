@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import UsersDAO from '../dao/users.dao';
+import TrackAFK from '../subscribers/trackAFK.sub';
 
 // Todo: Authentication and Session Management
 
@@ -142,6 +143,14 @@ export default class UserController {
         res.status(500).json({ error: 'Internal server error.' })
         return
       }
+
+      const time = new Date()
+
+      const tracker = await TrackAFK.run(loginResponse?.insertedId, time, userData?.username)
+      if (!tracker.success) {
+        res.status(500).json({ error: 'Internal server error.' })
+        return
+      }
       
       res.json({ token: user.encoded(), info: user.toJSON() })
     } catch(error) {
@@ -169,6 +178,12 @@ export default class UserController {
         console.log(logout_err)
 
         res.status(500).json({ error: 'Internal server error.' })
+        return
+      }
+
+      const deleteTracker = await TrackAFK.delete(userObj.username)
+      if (deleteTracker.error) {
+        res.status(500).json({ error: 'Failed to delete user.' })
         return
       }
 
@@ -206,6 +221,12 @@ export default class UserController {
       const { error: delete_err } = deleteRes
       if (delete_err) {
         console.log(delete_err)
+        res.status(500).json({ error: 'Failed to delete user.' })
+        return
+      }
+
+      const deleteTracker = await TrackAFK.delete(user.username)
+      if (deleteTracker.error) {
         res.status(500).json({ error: 'Failed to delete user.' })
         return
       }
