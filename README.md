@@ -8,11 +8,11 @@
    \/_/    \/_/\/____/ \/____/           \/__/ \/_/ \/__/\/_/ \/_/\/_/ \/___/   \/_/  \/____/ \/_/
 </pre>
 ![CodeQL](https://github.com/loveyousomuch554/file-transfer/workflows/CodeQL/badge.svg?branch=main)
-### Info
-<p>Documentation will be updated.</p>
-<p>btw happy new year</p>
 
-### Testing
+## Info
+<p>Documentation will be updated.</p>
+
+## Testing
 <p>For testing with logs run the following commands:</p>
 
 ```shell
@@ -23,7 +23,7 @@ Without logs:
 npm run test -- --silent
 ```
 
-### Server
+## Server
 Run server:     
 ```shell
 npm run prod
@@ -32,3 +32,13 @@ Dev server:
 ```shell
 npm run watch:dev
 ```
+
+## Docs
+
+### Subscribers
+`/src/server/subscribers/`
+
+#### TrackAFK
+
+After each user login, a session and a `last activity` document (timeout) are created. This timeout defines the amount of time a session will remain active in case there is no activity in the session, closing and invalidating the session upon the defined idle period since the last HTTP request received by the web application for a given session ID.
+Btw, the same result can be achieved using `createIndexes` - http://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html#createIndexes
