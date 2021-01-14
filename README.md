@@ -11,7 +11,7 @@
 
 ## Info
 <p>Documentation will be updated.</p>
-Now I'm studying how to put a project on docker.
+Now I'm studying how to put a project on docker...
 
 ## Testing
 <p>For testing with logs run the following commands:</p>
