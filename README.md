@@ -36,7 +36,7 @@ npm run watch:dev
 Docker:
 
 ```shell
-docker build -t file-transfer -f $PWD/file-transfer/etc/Dockerfile $PWD/file-transfer
+docker build -t file-transfer -f $PWD/etc/Dockerfile $PWD
 ```
 
 ```shell
