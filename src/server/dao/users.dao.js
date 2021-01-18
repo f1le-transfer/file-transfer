@@ -92,7 +92,13 @@ class UsersDAO {
    * @returns {Object | null} - Returns either user object or nothing(null)
    */
   static async getUser(username) {
-    return await users.findOne({ username: username })
+    try {
+      return await users.findOne({ username: username })
+    } catch(error) {
+      console.log(error)
+
+      return { error }
+    }
   }
 
   /**
