@@ -71,12 +71,22 @@ function validateCredential(userFromBody, errors) {
 
 export default class UserController {
   static async get(req, res) {
-    
+    const username = req?.params?.username
+    const userData = await UsersDAO.getUser(username)
+
+    if (!userData || userData?.error) {
+      res.status(400).send('Username not valid.')
+      return
+    }
+
+    const user = new User(userData)
+
+    res.json(user)
   }
 
   static async register(req, res) {
     try {
-      let rawUserData = req.body
+      const rawUserData = req.body
       let errors = {}
 
       validateCredential(rawUserData, errors)
