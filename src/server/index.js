@@ -22,4 +22,7 @@ import users from './routes/users.route';
 app.use('/files', files)
 app.use('/users', users)
 
+// Handling invalid requests.
+app.use((req, res) => res.sendStatus(404) )
+
 export default app
