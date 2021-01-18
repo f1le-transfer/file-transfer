@@ -70,6 +70,10 @@ function validateCredential(userFromBody, errors) {
 }
 
 export default class UserController {
+  static async get(req, res) {
+    
+  }
+
   static async register(req, res) {
     try {
       let rawUserData = req.body
