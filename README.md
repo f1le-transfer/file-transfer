@@ -12,6 +12,9 @@
 ## Info
 <p>Documentation will be updated.</p>
 
+Current project stage: <br>
+Working on a logging system.
+
 ## Testing
 <p>For testing with logs run the following commands:</p>
 
