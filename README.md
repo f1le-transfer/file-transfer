@@ -15,6 +15,15 @@
 Current project stage: <br>
 Working on a logging system.
 
+If you receive the following error while installing modules - 
+```shell
+Error: Cannot find module 'path_to_my_project/node_modules/bcrypt/lib/binding/napi-v3/bcrypt_lib.node'
+```
+
+The way that helped me:: <br>
+```cd node_modules/bcrypt```<br>
+```node-pre-gyp install --fallback-to-build```
+
 ## Testing
 <p>For testing with logs run the following commands:</p>
 
