@@ -11,6 +11,13 @@ app.use(cors()) // Cors for testing API
 app.use(bodyParser.json())
 app.use(compression())
 
+const pino = require('pino-http')({
+  prettyPrint: true,
+  timestamp: () => `,"time":"${new Date(Date.now()).toISOString()}"`,
+  level: process.env.NODE_ENV === 'test' ? 'silent' : 'info'
+})
+app.use(pino)
+
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
