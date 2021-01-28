@@ -12,6 +12,7 @@ app.use(cors()) // Cors for testing API
 app.use(bodyParser.json())
 app.use(compression())
 
+// Connect logs
 app.use(pino)
 
 app.get('/', (req, res) => {
