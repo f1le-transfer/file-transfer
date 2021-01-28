@@ -10,3 +10,6 @@ db_name_test="test_db_name"
 
 # A string, buffer, or object containing either the secret for HMAC algorithms or the PEM encoded private key for RSA and ECDSA.
 SECRET_KEY="secret"
+
+# Custom `logLevel` for pino
+SHORT_LOG=true

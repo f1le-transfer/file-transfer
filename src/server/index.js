@@ -3,6 +3,7 @@ import '../../config/index';
 import express from 'express';
 import bodyParser from 'body-parser';
 import compression from 'compression';
+import pino from './log'
 const app = express();
 
 import cors from 'cors';
@@ -10,6 +11,9 @@ app.use(cors()) // Cors for testing API
 
 app.use(bodyParser.json())
 app.use(compression())
+
+// Connect logs
+app.use(pino)
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
