@@ -3,6 +3,7 @@ import '../../config/index';
 import express from 'express';
 import bodyParser from 'body-parser';
 import compression from 'compression';
+import pino from './log'
 const app = express();
 
 import cors from 'cors';
@@ -11,11 +12,6 @@ app.use(cors()) // Cors for testing API
 app.use(bodyParser.json())
 app.use(compression())
 
-const pino = require('pino-http')({
-  prettyPrint: true,
-  timestamp: () => `,"time":"${new Date(Date.now()).toISOString()}"`,
-  level: process.env.NODE_ENV === 'test' ? 'silent' : 'info'
-})
 app.use(pino)
 
 app.get('/', (req, res) => {
