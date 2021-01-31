@@ -11,7 +11,7 @@ class TrackAFK {
     }
   }
 
-  static async delete(username) {
+  static async deleteUsrTracker(username) {
     try {
       return await TrackAFK_DAO.deleteTracker(username)
     } catch(error) {

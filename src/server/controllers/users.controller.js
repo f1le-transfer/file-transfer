@@ -195,7 +195,7 @@ export default class UserController {
         return
       }
 
-      const deleteTracker = await TrackAFK.delete(userObj.username)
+      const deleteTracker = await TrackAFK.deleteUsrTracker(userObj.username)
       if (deleteTracker.error) {
         res.status(500).json({ error: 'Failed to delete user.' })
         return
@@ -239,7 +239,7 @@ export default class UserController {
         return
       }
 
-      const deleteTracker = await TrackAFK.delete(user.username)
+      const deleteTracker = await TrackAFK.deleteUsrTracker(user.username)
       if (deleteTracker.error) {
         res.status(500).json({ error: 'Failed to delete user.' })
         return
