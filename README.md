@@ -14,7 +14,7 @@
 
 Current project stage: improving user security.
 
-#### Common errors:
+#### Frequent errors:
 Error while installing npm modules:
 ```shell
 Error: 
