@@ -3,7 +3,11 @@ import { ObjectID } from 'mongodb';
 let users
 let sessions
 
-// Todo: role assignment, verify role, preferences
+/* TODO:
+    Add user creation date fields and last modified field,
+    method for changing user data,
+    user verification for specific requests.
+ */
 
 class UsersDAO {
   static async injectDB(conn) {
