@@ -3,8 +3,6 @@ import jwt from 'jsonwebtoken';
 import UsersDAO from '../dao/users.dao';
 import TrackAFK from '../subscribers/trackAFK.sub';
 
-// Todo: Authentication and Session Management
-
 const hashPwd = async pwd => await bcrypt.hash(pwd, 12)
 
 class User {
