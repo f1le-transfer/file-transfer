@@ -34,7 +34,7 @@ class UsersDAO {
         collMod: 'users',
         validator: {
           $jsonSchema: {
-            required: [ 'username', 'pwd' ],
+            required: [ 'username', 'pwd', 'created_at', 'updated_at' ],
             properties: {
               username: {
                 bsonType: 'string',
@@ -43,6 +43,14 @@ class UsersDAO {
               pwd: {
                 bsonType: 'string',
                 description: 'must be a string and is required'
+              },
+              created_at: {
+                bsonType: 'date',
+                description: 'must be a date and is required'
+              },
+              updated_at: {
+                bsonType: 'date',
+                description: 'must be a date and is required'
               }
             }
           }
@@ -112,6 +120,10 @@ class UsersDAO {
    */
   static async addUser(userInfo) {
     try {
+      const time = new Date()
+      userInfo.created_at = time
+      userInfo.updated_at = time
+
       await users.insertOne(userInfo)
       return { success: true }
     } catch(error) {

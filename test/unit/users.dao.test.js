@@ -72,7 +72,9 @@ describe('User DAO', () => {
       const user_from_db = await UsersDAO.getUser(username)
       delete user_from_db['_id']
 
-      expect(user_from_db).toEqual(_user.test)
+      // Test fields created_at and updated_at
+      expect(user_from_db.pwd).toBe(_user.test.pwd)
+      expect(user_from_db.username).toBe(_user.test.username)
 
       /* It returns `null` by searching a user not by username */
       const { pwd } = _user.test
