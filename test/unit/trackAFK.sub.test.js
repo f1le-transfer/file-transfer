@@ -35,7 +35,7 @@ describe('TrackAFK', () => {
     expect(last_timeout?.username).toBe(username)
   })
 
-  test('Update timeout', async () => {
+  test('Update timeout tracker trackAFK', async () => {
     // Login again
     const login_res = await fetch(root + '/users/login', options(_user))
     expect(login_res.status).toBe(200)
@@ -43,7 +43,7 @@ describe('TrackAFK', () => {
     expect((await timeoutAFK.findOne({ username: _user.username })).expireAt).not.toBe(last_timeout.expireAt)
   })
 
-  test('Auto deleting after logout', async () => {
+  test('Auto deleting tracker trackAFK after logout', async () => {
     const auth_head = {
       'Authorization': `Bearer ${token}`
     }
@@ -55,7 +55,7 @@ describe('TrackAFK', () => {
     expect(await timeoutAFK.findOne({ username: _user.username })).toBeNull()
   })
 
-  test('Auto deleting after deleting user', async () => {
+  test('Auto deleting tracker trackAFK after deleting user', async () => {
     const auth_head = {
       'Authorization': `Bearer ${token}`
     }
