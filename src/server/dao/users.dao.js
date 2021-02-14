@@ -4,9 +4,8 @@ let users
 let sessions
 
 /* TODO:
-    Add user creation date fields and last modified field,
-    method for changing user data,
-    user verification for specific requests.
+    1. Add user verification for specific requests.
+    2. Review the code and rewrite methods using findOneAndUpdate, findOneAndDelete, etc.
  */
 
 class UsersDAO {
@@ -96,7 +95,7 @@ class UsersDAO {
  /**
   * Some of the methods below use {username: username} instead of {username}
   * to avoid specifying a user by other fields.
-  * */
+  */
 
   /**
    * Finds a user in `users` collection.
@@ -248,6 +247,32 @@ class UsersDAO {
     }
   }
 
+  /**
+   * Updates user data.
+   * @param username - The username of the user update
+   * @param fields - The fields to update
+   * @return {Object}
+   */
+  static async changeUserData(username, fields) {
+    try {
+      const time = new Date()
+
+      const user = await users.findOneAndUpdate(
+        { username: username },
+        {
+          $set: { updated_at: time, ...fields }
+        },
+        { returnOriginal: false }
+      )
+
+      return { success: true, user }
+    } catch(error) {
+      console.error('Error occurred while updating user.')
+      console.log(error)
+
+      return { error }
+    }
+  }
 }
 
 export default UsersDAO
