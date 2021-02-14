@@ -4,6 +4,10 @@ import UsersDAO from './users.dao';
 let AFK
 let ChangeStream
 
+/**
+ * TODO: review code
+ */
+
 class TrackAFK_DAO {
   static async injectDB(conn) {
     if (AFK) return;
