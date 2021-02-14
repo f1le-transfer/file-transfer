@@ -12,7 +12,7 @@
 ## Info
 <p>Documentation will be updated. 🙂</p>
 
-Current project stage: improving user security.
+Current stage of the project: improving user security and working on methods for updating the user.
 
 #### Frequent errors:
 Error while installing npm modules:
