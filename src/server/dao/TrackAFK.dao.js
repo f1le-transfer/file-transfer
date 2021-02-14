@@ -5,7 +5,7 @@ let AFK
 let ChangeStream
 
 /**
- * TODO: review code
+ * TODO: review code and write documentation
  */
 
 class TrackAFK_DAO {
