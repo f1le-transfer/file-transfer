@@ -1,0 +1,7 @@
+- name: Generate JSDoc documentation
+  # You may pin to the exact commit or the version.
+  # uses: brunokrauss/jsdoc-action@f8aeebcec1be0bbd297001fc506c1c58b4545fe0
+  uses: brunokrauss/jsdoc-action@3
+  with:
+    # Path to Javascript File
+    jsdoc-path: # default is src
