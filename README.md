@@ -9,7 +9,7 @@
 </pre>
 ![CodeQL](https://github.com/loveyousomuch554/file-transfer/workflows/CodeQL/badge.svg?branch=main)
 
-## Info
+# Info
 <p>Documentation will be updated. 🙂</p>
 
 Current stage of the project: improving user security and working on methods for updating the user.
@@ -58,7 +58,7 @@ docker build -t file-transfer -f $PWD/etc/Dockerfile $PWD
 docker run -dp 80:80 file-transfer 
 ```
 
-## Docs
+# Docs
 
 ### Subscribers
 `/src/server/subscribers/`
