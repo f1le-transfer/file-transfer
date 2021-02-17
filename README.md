@@ -67,3 +67,5 @@ docker run -dp 80:80 file-transfer
 
 After each user login, a session and a `last activity` document (timeout) are created. This timeout defines the amount of time a session will remain active in case there is no activity in the session, closing and invalidating the session upon the defined idle period since the last HTTP request received by the web application for a given session ID.
 Btw, the same result can be achieved using `createIndexes` - http://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html#createIndexes
+
+# API
