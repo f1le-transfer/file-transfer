@@ -5,13 +5,6 @@ import TrackAFK from '../subscribers/trackAFK.sub';
 
 const hashPwd = async pwd => await bcrypt.hash(pwd, 12)
 
-/**
- * TODO:
- *  1. Write tests for update pwd.
- *  2. Fix a bug with deleting an account when the user is not logged. Rewrite `delete` method with `authenticate`.
- *  3. In the future, add separate functions for changing user data with two-factor authentication.
- */
-
 // Methods for managing user data.
 class User {
   constructor({ username, pwd } = {}) {
@@ -20,7 +13,7 @@ class User {
   }
 
   /**
-   * Return object in JSON format.
+   * Return user object in JSON format.
    * @return {Object}
    */
   toJSON() {
@@ -28,8 +21,8 @@ class User {
   }
 
   /**
-   * Compare passwords.
-   * @param plainText - The password to be compared with the real one
+   * Compares user password and raw password.
+   * @param plainText - the password to be compared with the real one
    * @return {Boolean}
    */
   async comparePassword(plainText) {
@@ -75,7 +68,7 @@ class User {
  */
 function validateCredential(userFromBody, errors) {
   /**
-   * Password must be at least 8 characters and less than 65
+   * Password must be at least 8 characters and less than 65.
    * Must include: lowercase letter, capital letter,
    * number, special character (!@#$%^&*)
    * Can include any unicode character.
@@ -87,7 +80,7 @@ function validateCredential(userFromBody, errors) {
   /**
    * Login must be at least 3 characters and less than 16
    * Can include: A-Z, a-z, 0-9 and (-!@#$%^&*).
-   * @param username
+   * @param username - username
    * @returns {boolean}
    */
   const isUsrSuitable = username => /^[\w@$^&*]{3,15}$/.test(username)
@@ -106,9 +99,9 @@ function validateCredential(userFromBody, errors) {
 
 /**
  * Logs out of the account and returns the updated user.
- * @param new_user - Data of new user.
- * @param old_username - Previous username to log out of account, by default current username.
- * @return {{user}|{error}}
+ * @param new_user - data of new user.
+ * @param old_username - previous username to log out of account, by default current username.
+ * @return {Object}
  */
 async function logoutAndUpdateUsr(new_user, old_username=new_user.username) {
   try {

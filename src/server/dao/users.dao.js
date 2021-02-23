@@ -9,6 +9,11 @@ let sessions
  */
 
 class UsersDAO {
+  /**
+   * Connect `users` and `sessions` collections.
+   * @param conn - client from mongodb cluster
+   * @return {undefined}
+   */
   static async injectDB(conn) {
     if (users && sessions) return;
 
@@ -99,8 +104,8 @@ class UsersDAO {
 
   /**
    * Finds a user in `users` collection.
-   * @param username - Login of the searched user
-   * @returns {Object | null} - Returns either user object or nothing(null)
+   * @param username - login of the searched user
+   * @returns {Object | null} - returns either user object or nothing(null)
    */
   static async getUser(username) {
     try {
@@ -114,8 +119,8 @@ class UsersDAO {
 
   /**
    * Adds a user to the `users` collection.
-   * @param userInfo - The information about user
-   * @returns {Object} - Returns either a "success" or an "error" Object
+   * @param userInfo - the information about user
+   * @returns {Object} - returns either a "success" or an "error" Object
    */
   static async addUser(userInfo) {
     try {
@@ -138,9 +143,9 @@ class UsersDAO {
 
   /**
    * Adds a user to the `sessions` collection.
-   * @param username - The username to login
-   * @param jwt - A JSON web token representing the user's claims
-   * @returns {Object} - Returns either a "success" or an "error" Object
+   * @param username - the username to login
+   * @param jwt - JSON web token representing the user's claims
+   * @returns {Object} - returns either a "success" or an "error" Object
    */
   static async loginUser(username, jwt) {
     try {
@@ -184,8 +189,8 @@ class UsersDAO {
 
   /**
    * Removes a user from the `sessions` and `users` collections.
-   * @param username - The username of the user to delete
-   * @returns {Object} - Returns either a "success" or an "error" Object
+   * @param username - the username of the user to delete
+   * @returns {Object} - returns either a "success" or an "error" Object
    */
   static async deleteUser(username) {
     try {
@@ -207,8 +212,8 @@ class UsersDAO {
 
   /**
    * Removes a user from the `session` collection.
-   * @param username - The username of the user to logout
-   * @returns {Object} - Returns either a "success" or an "error" Object
+   * @param username - the username of the user to logout
+   * @returns {Object} - returns either a "success" or an "error" Object
    */
   static async logoutUser(username) {
     try {
@@ -227,8 +232,8 @@ class UsersDAO {
 
   /**
    * Gets a user session from the `sessions` collection.
-   * @param usernameOrId - The username or ID of the user to search for in `sessions`.
-   * @returns {Object | null} - Returns a user session Object, an "error" Object
+   * @param usernameOrId - the username or ID of the user to search for in `sessions`.
+   * @returns {Object | null} - returns a user session Object, an "error" Object
    * if something went wrong, or null if user was not found.
    */
   static async getUserSession(usernameOrId) {
@@ -249,8 +254,8 @@ class UsersDAO {
 
   /**
    * Updates user data.
-   * @param username - The username of the user update
-   * @param fields - The fields to update
+   * @param username - the username of the user update
+   * @param fields - the fields to update
    * @return {Object}
    */
   static async changeUserData(username, fields) {

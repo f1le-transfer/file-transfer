@@ -1,4 +1,11 @@
+/**
+ * Express router to mount user related functions on.
+ * @type {object}
+ * @const
+ * @namespace routes
+ */
 import { Router } from 'express';
+
 import UserCtrl from '../controllers/users.controller'
 const _Router = Router()
 
