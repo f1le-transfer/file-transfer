@@ -1,14 +1,42 @@
+/**
+ * Data access object for [TrackAFK]{@link https://github.com/lusm554/file-transfer/blob/main/src/server/subscribers/trackAFK.sub.js} class.
+ * 
+ * @module TrackAFK_DAO
+ * @author [lusm554]{@link https://github.com/lusm554}
+ * @requires ObjectID
+ * @requires UsersDAO
+ */
+
+/**
+ * Returns a new ObjectId value.
+ * @external ObjectID
+ * @see {@link https://docs.mongodb.com/manual/reference/method/ObjectId/|ObjectID}
+ */
 import { ObjectID } from 'mongodb';
 import UsersDAO from './users.dao';
 
+/**
+ * Connection for timeoutAFK collection.
+ * @member
+ */
 let AFK
+
+/**
+ * [Change stream cursor]{@link https://docs.mongodb.com/manual/changeStreams/#changestreams} for timeoutAFK collection.
+ * @member
+ */
 let ChangeStream
 
 /**
- * TODO: review code and write documentation
+ * Manages the timeoutAFK collection.
+ * @class
  */
-
 class TrackAFK_DAO {
+  /**
+   * Connect `timeoutAFK` collection.
+   * @param conn - [client]{@link https://mongodb.github.io/node-mongodb-native/api-generated/mongoclient.html} from mongodb cluster
+   * @return {undefined}
+   */
   static async injectDB(conn) {
     if (AFK) return;
 
@@ -60,6 +88,13 @@ class TrackAFK_DAO {
     }
   }
 
+  /**
+   * Add afk tracker to the `timeoutAFK` collection.
+   * @param _id - user id in the collection `users`
+   * @param expireAt - the date after which the user will be logged out
+   * @param username - username
+   * @return {Object}
+   */
   static async add(_id, expireAt, username) {
     try {
       // Compose the expiry time of the document for 12 hours
@@ -98,7 +133,12 @@ class TrackAFK_DAO {
     }
   }
 
-  static async getTracker(username, _id) {
+  /**
+   * Get tracker object from collection `timeoutAFK`.
+   * @param username - username from `users` collection
+   * @return {Object}
+   */
+  static async getTracker(username) {
     try {
       return await AFK.findOne({ username })
     } catch(error) {
@@ -108,6 +148,11 @@ class TrackAFK_DAO {
     }
   }
 
+  /**
+   * Remove tracker object from collection `timeoutAFK`.
+   * @param username - username from `users` collection
+   * @return {Object}
+   */
   static async deleteTracker(username) {
     try {
       await AFK.deleteOne({ username: username })
