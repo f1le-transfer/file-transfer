@@ -14,7 +14,7 @@
 
 <p>Documentation will be updated. 🙂</p>
 
-Current stage of the project: improving user security and working on methods for updating the user.
+Current stage of the project: <u>working on project documentation</u>.
 
 #### Frequent errors:
 
