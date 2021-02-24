@@ -1,5 +1,5 @@
 /* Set config */
-import { pino } from '../../build/index.conf';
+import { pino } from '../../build/index.conf.js';
 
 import express from 'express';
 import bodyParser from 'body-parser';

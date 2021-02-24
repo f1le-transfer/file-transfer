@@ -1,5 +1,5 @@
 // Set env variables
-import '../../config/index.conf';
+import '../../config/index.conf.js';
 
 export default async function() {
   // Start server

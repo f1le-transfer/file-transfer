@@ -37,21 +37,4 @@ const short_info_opts = {
 
 const pino = require('pino-http')(process.env.SHORT_LOG==='false' ? opts : short_info_opts)
 
-/* documentation config swagger  */
-// import swaggerJsdoc from 'swagger-jsdoc'
-
-const options = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Hello World',
-      version: '1.0.0',
-    },
-  },
-  apis: ['./src/routes*.js'], // files containing annotations as above
-};
-const openapiSpecification = 1/*swaggerJsdoc(options);*/
-
-// exports.pino = pino
-// exports.openapiSpecification = openapiSpecification
-export { pino, openapiSpecification }
+export { pino }
