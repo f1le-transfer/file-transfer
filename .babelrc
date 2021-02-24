@@ -31,6 +31,7 @@
     "@babel/plugin-proposal-do-expressions"
   ],
   "ignore": [
-    "./client"
+    "./client",
+    "node_modules"
   ]
 }
