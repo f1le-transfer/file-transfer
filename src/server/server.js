@@ -1,4 +1,4 @@
 import app from './index';
 
-// Connect mongoDB
+// Connect mongoDB and run app (express server)
 import('./loaders/mongo.loader').then(() => app.listen(process.env.PORT))
