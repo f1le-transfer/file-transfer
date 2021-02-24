@@ -1,11 +1,11 @@
 {
   "name": "file-transfer",
   "version": "1.0.0",
-  "description": "",
+  "description": "???",
   "main": "index.js",
   "scripts": {
     "server": "node build/server/server.js",
-    "transpile": "babel ./src --out-dir build",
+    "transpile": "babel ./src ./config --out-dir build",
     "clean": "rimraf ./build",
     "prebuild": "npm run clean",
     "build": "npm run transpile",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
+    "@babel/core": "^7.13.1",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-proposal-decorators": "^7.0.0",
     "@babel/plugin-proposal-do-expressions": "^7.0.0",

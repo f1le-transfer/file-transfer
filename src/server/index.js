@@ -1,5 +1,6 @@
-// Set env variables
-import { pino } from '../../config/index';
+/* Set config */
+import { pino } from '../../build/index.conf';
+
 import express from 'express';
 import bodyParser from 'body-parser';
 import compression from 'compression';

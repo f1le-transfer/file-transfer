@@ -1,8 +1,8 @@
 /* Configure env variables */
-const dotenv = require('dotenv')
-const path = require('path')
+import dotenv from 'dotenv'
+import path from 'path'
 
-dotenv.config({ path: path.join(__dirname, '.env') })
+dotenv.config({ path: path.join(__dirname, '..', 'config', '.env') })
 
 /* Configure log system */
 const formatters = {
@@ -37,5 +37,21 @@ const short_info_opts = {
 
 const pino = require('pino-http')(process.env.SHORT_LOG==='false' ? opts : short_info_opts)
 
-exports.pino = pino
+/* documentation config swagger  */
+// import swaggerJsdoc from 'swagger-jsdoc'
 
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Hello World',
+      version: '1.0.0',
+    },
+  },
+  apis: ['./src/routes*.js'], // files containing annotations as above
+};
+const openapiSpecification = 1/*swaggerJsdoc(options);*/
+
+// exports.pino = pino
+// exports.openapiSpecification = openapiSpecification
+export { pino, openapiSpecification }
