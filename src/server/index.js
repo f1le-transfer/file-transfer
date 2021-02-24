@@ -1,9 +1,8 @@
 // Set env variables
-import '../../config/index';
+import { pino } from '../../config/index';
 import express from 'express';
 import bodyParser from 'body-parser';
 import compression from 'compression';
-import pino from './log'
 const app = express();
 
 import cors from 'cors';
