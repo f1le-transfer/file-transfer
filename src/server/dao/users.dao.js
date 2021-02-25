@@ -1,6 +1,28 @@
+/**
+ * Data access object for [UsersDAO]{@link https://github.com/lusm554/file-transfer/blob/main/src/server/controllers/users.controller.js} class.
+ *
+ * @module UsersDAO
+ * @author [lusm554]{@link https://github.com/lusm554}
+ * @requires ObjectID
+ */
+
+/**
+ * Returns a new ObjectId value.
+ * @external ObjectID
+ * @see {@link https://docs.mongodb.com/manual/reference/method/ObjectId/|ObjectID}
+ */
 import { ObjectID } from 'mongodb';
 
+/**
+ * Connection for `users` collection.
+ * @member
+ */
 let users
+
+/**
+ * Connection for `sessions` collection.
+ * @member
+ */
 let sessions
 
 /* TODO:
@@ -8,10 +30,14 @@ let sessions
     2. Review the code and rewrite methods using findOneAndUpdate, findOneAndDelete, etc.
  */
 
+/**
+ * Manages the `users` and `sessions` collections.
+ * @class
+ */
 class UsersDAO {
   /**
    * Connect `users` and `sessions` collections.
-   * @param conn - client from mongodb cluster
+   * @param {Object} conn - client from mongodb cluster
    * @return {undefined}
    */
   static async injectDB(conn) {
@@ -104,8 +130,8 @@ class UsersDAO {
 
   /**
    * Finds a user in `users` collection.
-   * @param username - login of the searched user
-   * @returns {Object | null} - returns either user object or nothing(null)
+   * @param {String} username - login of the searched user
+   * @returns {Object | null}
    */
   static async getUser(username) {
     try {
@@ -119,8 +145,8 @@ class UsersDAO {
 
   /**
    * Adds a user to the `users` collection.
-   * @param userInfo - the information about user
-   * @returns {Object} - returns either a "success" or an "error" Object
+   * @param {Object} userInfo - user object
+   * @returns {Object} - either a "success" or an "error" {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object|Object}
    */
   static async addUser(userInfo) {
     try {
@@ -143,9 +169,9 @@ class UsersDAO {
 
   /**
    * Adds a user to the `sessions` collection.
-   * @param username - the username to login
-   * @param jwt - JSON web token representing the user's claims
-   * @returns {Object} - returns either a "success" or an "error" Object
+   * @param {String} username - the username to login
+   * @param {String} jwt - JSON web token representing the user's claims
+   * @returns {Object} - either a "success" or an "error" Object
    */
   static async loginUser(username, jwt) {
     try {
@@ -189,8 +215,8 @@ class UsersDAO {
 
   /**
    * Removes a user from the `sessions` and `users` collections.
-   * @param username - the username of the user to delete
-   * @returns {Object} - returns either a "success" or an "error" Object
+   * @param {String} username - the username of the user to delete
+   * @returns {Object} - either a "success" or an "error" {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object|Object}
    */
   static async deleteUser(username) {
     try {
@@ -212,8 +238,8 @@ class UsersDAO {
 
   /**
    * Removes a user from the `session` collection.
-   * @param username - the username of the user to logout
-   * @returns {Object} - returns either a "success" or an "error" Object
+   * @param {String} username - the username of the user to logout
+   * @returns {Object} - either a "success" or an "error" Object
    */
   static async logoutUser(username) {
     try {
@@ -232,9 +258,8 @@ class UsersDAO {
 
   /**
    * Gets a user session from the `sessions` collection.
-   * @param usernameOrId - the username or ID of the user to search for in `sessions`.
-   * @returns {Object | null} - returns a user session Object, an "error" Object
-   * if something went wrong, or null if user was not found.
+   * @param {String|ObjectID} usernameOrId - the username or ID of the user to search for in `sessions`.
+   * @returns {Object | null} - user session object, an "error" {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object|Object} if something went wrong, or {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null|null} if user was not found.
    */
   static async getUserSession(usernameOrId) {
     try {
@@ -253,10 +278,10 @@ class UsersDAO {
   }
 
   /**
-   * Updates user data.
-   * @param username - the username of the user update
-   * @param fields - the fields to update
-   * @return {Object}
+   * Updates user data object.
+   * @param {String} username - the username of the user update
+   * @param {Object} fields - the fields to update
+   * @returns {Object} - either a "success" or an "error" {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object|Object}
    */
   static async changeUserData(username, fields) {
     try {

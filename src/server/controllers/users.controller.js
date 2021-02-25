@@ -1,12 +1,46 @@
+/**
+ * Controller for [UsersDAO]{@link https://github.com/lusm554/file-transfer/blob/main/src/server/dao/users.dao.js} class.
+ * @module User_controller
+ * @author [lusm554]{@link https://github.com/lusm554}
+ * @requires bcrypt
+ * @requires jwt
+ * @requires UsersDAO
+ * @requires TrackAFK
+ */
+
+/**
+ * Returns a new ObjectId value.
+ * @external bcrypt
+ * @see {@link https://www.npmjs.com/package/bcrypt}
+ */
 import bcrypt from 'bcrypt';
+
+/**
+ * Returns a new ObjectId value.
+ * @external jwt
+ * @see {@link https://www.npmjs.com/package/jsonwebtoken}
+ */
 import jwt from 'jsonwebtoken';
 import UsersDAO from '../dao/users.dao';
 import TrackAFK from '../subscribers/trackAFK.sub';
 
+/**
+ * Hash password.
+ * @param {String} pwd - password
+ * @return {String}
+ */
 const hashPwd = async pwd => await bcrypt.hash(pwd, 12)
 
-// Methods for managing user data.
+/**
+ * Methods for managing user data.
+ * @class
+ */
 class User {
+  /**
+   * Create user object.
+   * @param {String} username - username
+   * @param {String} pwd - password
+   */
   constructor({ username, pwd } = {}) {
     this.username = username
     this.pwd = pwd
@@ -22,7 +56,7 @@ class User {
 
   /**
    * Compares user password and raw password.
-   * @param plainText - the password to be compared with the real one
+   * @param {String} plainText - the password to be compared with the real one
    * @return {Boolean}
    */
   async comparePassword(plainText) {
@@ -41,7 +75,7 @@ class User {
 
   /**
    * Get user data from jwt token.
-   * @param userJwt - JSON Web Token
+   * @param {String} userJwt - JSON Web Token
    * @return {Object}
    */
   static async decoded(userJwt) {
@@ -62,9 +96,10 @@ class User {
 }
 
 /**
- * Checks password and login.
- * @param userFromBody - user object from request
- * @param errors - error logging object
+ * Checks password and login for characters and length. If something is wrong, write an error to the object. When called without arguments, returns the function with the written methods into the prototype.
+ * @param {Object} userFromBody - raw user object
+ * @param {Object} errors - error object
+ * @return {undefined}
  */
 function validateCredential(userFromBody, errors) {
   /**
@@ -73,6 +108,7 @@ function validateCredential(userFromBody, errors) {
    * number, special character (!@#$%^&*)
    * Can include any unicode character.
    * @param pwd
+   * @inner
    * @returns {boolean}
    */
   const isPwdSuitable = pwd => /^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*](.){8,64}$/u.test(pwd)
@@ -81,6 +117,7 @@ function validateCredential(userFromBody, errors) {
    * Login must be at least 3 characters and less than 16
    * Can include: A-Z, a-z, 0-9 and (-!@#$%^&*).
    * @param username - username
+   * @inner
    * @returns {boolean}
    */
   const isUsrSuitable = username => /^[\w@$^&*]{3,15}$/.test(username)
@@ -99,8 +136,8 @@ function validateCredential(userFromBody, errors) {
 
 /**
  * Logs out of the account and returns the updated user.
- * @param new_user - data of new user.
- * @param old_username - previous username to log out of account, by default current username.
+ * @param {Object} new_user - data of new user
+ * @param {String} old_username - previous username to log out of account, by default username from `new_user` object
  * @return {Object}
  */
 async function logoutAndUpdateUsr(new_user, old_username=new_user.username) {
@@ -120,7 +157,21 @@ async function logoutAndUpdateUsr(new_user, old_username=new_user.username) {
   }
 }
 
-export default class UserController {
+/**
+ * Manages the user routes.
+ * @class
+ */
+class UserController {
+  /**
+   * Route for getting user.
+   * @name GET /users/:username
+   * @function
+   * @param {String} req.params.username - username
+   * @param {Object} req - request object
+   * @param {Object} res - response object
+   * @example
+   curl --location --request GET 'http://localhost/users/lusm'
+   */
   static async get(req, res) {
     const username = req?.params?.username
     const userData = await UsersDAO.getUser(username)
@@ -135,6 +186,21 @@ export default class UserController {
     res.json(user)
   }
 
+  /**
+   * Route for register user.
+   * @name POST /users/register
+   * @function
+   * @param {Object} req.body - user data
+   * @param {Object} req - request object
+   * @param {Object} res - response object
+   * @example
+   curl --location --request POST 'http://localhost/users/register' \
+   --header 'Content-Type: application/json' \
+   --data-raw '{
+      "username": "lusm",
+      "pwd": "!%!@#$!@1231234Aa$11!"
+   }'
+   */
   static async register(req, res) {
     try {
       const rawUserData = req.body
@@ -182,6 +248,21 @@ export default class UserController {
     }
   }
 
+  /**
+   * Route for login user.
+   * @name POST /users/login
+   * @function
+   * @param {Object} req.body - user data
+   * @param {Object} req - request object
+   * @param {Object} res - response object
+   * @example
+   curl --location --request POST 'http://localhost/users/login' \
+   --header 'Content-Type: application/json' \
+   --data-raw '{
+      "username": "lusm",
+      "pwd": "!%!@#$!@1231234Aa$11!"
+   }'
+   */
   static async login(req, res) {
     try {
       const { username, pwd } = req.body
@@ -225,6 +306,18 @@ export default class UserController {
     }
   }
 
+  /**
+   * Route for logout user.
+   * @name POST /users/logout
+   * @function
+   * @param {String} req.header('Authorization') - JWT token
+   * @param {Object} req - request object
+   * @param {Object} res - response object
+   * @example
+   curl --location --request POST 'http://localhost/users/logout' \
+   --header 'Authorization: Bearer J.W.T' \
+   --data-raw ''
+   */
   static async logout(req, res) {
     try {
       const userJwt = req.get("Authorization").slice("Bearer ".length)
@@ -260,6 +353,22 @@ export default class UserController {
     }
   }
 
+  /**
+   * Route for deleting user.
+   * @name DELETE /users/delete
+   * @function
+   * @param {String} req.body.pwd - user password
+   * @param {String} req.header('Authorization') - JWT token
+   * @param {Object} req - request object
+   * @param {Object} res - response object
+   * @example
+   curl --location --request DELETE 'http://localhost/users/delete' \
+   --header 'Authorization: Bearer J.W.T' \
+   --header 'Content-Type: application/json' \
+   --data-raw '{
+      "pwd": "!%!@#$!@1231234Aa$11!"
+   }'
+   */
   static async delete(req, res) {
     try {
       const { pwd } = req.body
@@ -305,7 +414,17 @@ export default class UserController {
     }
   }
 
-  // Middleware for checking the user's token and password before request.
+  /**
+   * Middleware for checking the user's token and password before request.
+   * @name authenticate
+   * @function
+   * @param {String} req.header('Authorization') - JWT token
+   * @param {String} req.params.username - username
+   * @param {Object} req.body - user data
+   * @param {Object} req - request object
+   * @param {Object} res - response object
+   * @param {Function} next - callback
+   */
   static async authenticate(req, res, next) {
     try {
       const userJwt = req.get("Authorization")?.slice("Bearer ".length)
@@ -348,7 +467,23 @@ export default class UserController {
       res.status(500).json({ error: 'Internal error while deleting user.' })
     }
   }
-  
+
+  /**
+   * Updates all allowed user fields except the password.
+   * @name PUT /users/update/:username
+   * @function
+   * @param {String} req.params.username - username
+   * @param {Object} req.body - user data
+   * @param {Object} req - request object
+   * @param {Object} res - response object
+   * @example
+   curl --location --request PUT 'http://localhost/users/update/lusm' \
+   --header 'Content-Type: application/json' \
+   --header 'Authorization: Bearer J.W.T' \
+   --data-raw '{
+      "username": "lusm1"
+    }'
+   */
   static async update_user(req, res) {
     try {
       const username = req?.params?.username
@@ -403,6 +538,23 @@ export default class UserController {
     }
   }
 
+  /**
+   * Update user password.
+   * @name PUT /users/update/password/:username
+   * @function
+   * @param {Object} req.body - user data
+   * @param {Object} req - request object
+   * @param {Object} res - response object
+   * @example
+   curl --location --request PUT 'http://localhost/users/update/password/lusm' \
+   --header 'Content-Type: application/json' \
+   --header 'Authorization: Bearer J.W.T' \
+   --data-raw '{
+    "username": "lusm",
+      "pwd": "!%!@#$!@1231234Aa$11!!!",
+      "new_pwd": "!%!@#$!@1231234Aa$11!!3124!"
+    }'
+   */
   static async update_pwd(req, res) {
     try {
       const { new_pwd } = req?.body
@@ -436,3 +588,5 @@ export default class UserController {
     }
   }
 }
+
+export default UserController
