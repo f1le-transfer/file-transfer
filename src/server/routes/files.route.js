@@ -2,7 +2,7 @@
  * Express router to mount files related functions on.
  * @type {object}
  * @const
- * @namespace routes
+ * @module FileRoutes
  */
 import { Router } from 'express';
 import FileController from '../controllers/files.controller';

@@ -2,7 +2,7 @@
  * Express router to mount user related functions on.
  * @type {object}
  * @const
- * @namespace routes
+ * @module UserRoutes
  */
 import { Router } from 'express';
 
