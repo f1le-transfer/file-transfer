@@ -1,8 +1,9 @@
 /**
  * Express router to mount user related functions on.
- * @type {object}
- * @const
  * @module UserRoutes
+ * @author [lusm554]{@link https://github.com/lusm554}
+ * @requires Router
+ * @requires UserCtrl
  */
 import { Router } from 'express';
 
