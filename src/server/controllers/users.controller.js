@@ -371,25 +371,7 @@ class UserController {
    */
   static async delete(req, res) {
     try {
-      const { pwd } = req.body
-      if (!pwd || typeof pwd !== 'string') {
-        res.status(400).json({ error: 'Verify that the user data is correct.' })
-        return
-      }
-
-      const userJwt = req.get("Authorization")?.slice("Bearer ".length)
-      const userClaim = await User.decoded(userJwt)
-      const { error: jwt_err } = userClaim
-      if (jwt_err) {
-        res.status(401).json({ error: 'Verify that the user data is correct.' })
-        return
-      }
-
-      const user = new User(await UsersDAO.getUser(userClaim.username))
-      if (!(await user.comparePassword(pwd)) /*|| !(await user.isUserLogin())*/) {
-        res.status(401).json({ error: 'Verify that the user data is correct.' })
-        return
-      }
+      const { user } = req
 
       // Delete user's account
       const deleteRes = await UsersDAO.deleteUser(user.username)
@@ -445,7 +427,7 @@ class UserController {
 
       // Is user exist
       const userData = await UsersDAO.getUser(userClaim?.username)
-      if (!userData || userClaim?.username !== url_username) {
+      if (!userData || req.path !== '/delete' && userClaim?.username !== url_username) {
         res.status(401).json({ error: 'Verify that the user data is correct.' })
         return
       } else if (userData.error) {

@@ -192,7 +192,22 @@ describe('Users http requests', () => {
       expect(await toJSON(error_delete)).toEqual(verifyError)
     })
 
+    test('it returns error deleting user without login', async () => {
+      const auth_head = {
+        'Authorization': `Bearer ${token}`
+      }
+      const valid_logout = await fetch(root+'/users/logout', options(valid_user, auth_head))
+      expect(valid_logout.status).toBe(200)
+
+      const unsuccess_delete = await fetch(root+'/users/delete', options(valid_user, auth_head, 'DELETE'))
+      expect(unsuccess_delete.status).toBe(401)
+    })
+
     test('it success delete user and session', async () => {
+      login_res = await fetch(root+'/users/login', options(valid_user))
+      expect(login_res.status).toBe(200)
+
+      token = (await toJSON(login_res)).token
       const auth_head = {
         'Authorization': `Bearer ${token}`
       }
