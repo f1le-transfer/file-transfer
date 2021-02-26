@@ -14,9 +14,9 @@ import TrackAFK_DAO from '../dao/TrackAFK.dao';
 class TrackAFK {
   /**
    * Launches the tracker after the user is logged in.
-   * @param _id - user id from `users` collection
-   * @param expireAt - the date after which the user will be logged out
-   * @param username - username
+   * @param {Object} _id - user id from `users` collection
+   * @param {Date} expireAt - the date after which the user will be logged out
+   * @param {String} username - username
    * @return {Object}
    */
   static async run(_id, expireAt, username) {
@@ -31,7 +31,7 @@ class TrackAFK {
 
   /**
    * Removes the tracker object.
-   * @param username - username
+   * @param {String} username - username
    * @return {Object}
    */
   static async deleteUsrTracker(username) {

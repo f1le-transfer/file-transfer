@@ -34,7 +34,7 @@ let ChangeStream
 class TrackAFK_DAO {
   /**
    * Connect `timeoutAFK` collection.
-   * @param conn - [client]{@link https://mongodb.github.io/node-mongodb-native/api-generated/mongoclient.html} from mongodb cluster
+   * @param {Object} conn - [client]{@link https://mongodb.github.io/node-mongodb-native/api-generated/mongoclient.html} from mongodb cluster
    * @return {undefined}
    */
   static async injectDB(conn) {
@@ -90,9 +90,9 @@ class TrackAFK_DAO {
 
   /**
    * Add afk tracker to the `timeoutAFK` collection.
-   * @param _id - user id in the collection `users`
-   * @param expireAt - the date after which the user will be logged out
-   * @param username - username
+   * @param {ObjectID} _id - user id in the collection `users`
+   * @param {Date} expireAt - the date after which the user will be logged out
+   * @param {String} username - username
    * @return {Object}
    */
   static async add(_id, expireAt, username) {
@@ -135,7 +135,7 @@ class TrackAFK_DAO {
 
   /**
    * Get tracker object from collection `timeoutAFK`.
-   * @param username - username from `users` collection
+   * @param {String} username - username from `users` collection
    * @return {Object}
    */
   static async getTracker(username) {
@@ -150,7 +150,7 @@ class TrackAFK_DAO {
 
   /**
    * Remove tracker object from collection `timeoutAFK`.
-   * @param username - username from `users` collection
+   * @param {String} username - username from `users` collection
    * @return {Object}
    */
   static async deleteTracker(username) {
