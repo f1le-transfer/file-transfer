@@ -2,7 +2,22 @@ import { MongoClient } from 'mongodb';
 import UsersDAO from '../dao/users.dao';
 import TrackAFK_DAO from '../dao/TrackAFK.dao';
 
-const client = new MongoClient(process.env.db_uri, { useUnifiedTopology: true })
+const {
+  MONDO_DOMAIN,
+  MONGO_USERNAME,
+  MONGO_PASSWORD,
+  MONGO_HOSTNAME,
+  MONGO_PORT,
+  MONGO_DB,
+  MONGO_TEST_DB
+} = process.env;
+
+const url = `${MONDO_DOMAIN}://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}${MONGO_PORT}/${process.env.NODE_ENV==='test'? MONGO_TEST_DB:MONGO_DB}?authSource=admin`;
+
+// Set url for tests
+process.env.TEST_DB_URI = url
+
+const client = new MongoClient(url, { useUnifiedTopology: true })
 
 client.connect()
  .then( async (client) => {
