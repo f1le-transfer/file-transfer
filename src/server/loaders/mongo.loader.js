@@ -3,7 +3,7 @@ import UsersDAO from '../dao/users.dao';
 import TrackAFK_DAO from '../dao/TrackAFK.dao';
 
 const {
-  MONDO_DOMAIN,
+  MONDO_PROTOCOL,
   MONGO_USERNAME,
   MONGO_PASSWORD,
   MONGO_HOSTNAME,
@@ -12,7 +12,14 @@ const {
   MONGO_TEST_DB
 } = process.env;
 
-const url = `${MONDO_DOMAIN}://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}${MONGO_PORT}/${process.env.NODE_ENV==='test'? MONGO_TEST_DB:MONGO_DB}?authSource=admin`;
+/**
+ * Set default value.
+ * @param {*} isempty 
+ * @param {*} shoulbe 
+ */
+const default_val = (isempty, shoulbe) => !isempty ? '' : shoulbe;
+
+const url = `${MONDO_PROTOCOL}://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}${default_val(MONGO_PORT, ':'+MONGO_PORT)}/${process.env.NODE_ENV==='test'? MONGO_TEST_DB:MONGO_DB}?authSource=admin`;  
 
 // Set url for tests
 process.env.TEST_DB_URI = url
