@@ -15,11 +15,16 @@ const {
 /**
  * Set default value.
  * @param {*} isempty 
- * @param {*} shoulbe 
+ * @param {*} should_be
  */
-const default_val = (isempty, shoulbe) => !isempty ? '' : shoulbe;
+const default_val = (isempty, should_be) => !isempty ? '' : should_be;
 
-const url = `${MONDO_PROTOCOL}://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}${default_val(MONGO_PORT, ':'+MONGO_PORT)}/${process.env.NODE_ENV==='test'? MONGO_TEST_DB:MONGO_DB}?authSource=admin`;  
+const url = `${MONDO_PROTOCOL}://\
+${MONGO_USERNAME}:\
+${MONGO_PASSWORD}@\
+${MONGO_HOSTNAME}\
+${default_val(MONGO_PORT, ':'+MONGO_PORT)}/\
+${process.env.NODE_ENV==='test'? MONGO_TEST_DB:MONGO_DB}?authSource=admin`;
 
 // Set url for tests
 process.env.TEST_DB_URI = url
