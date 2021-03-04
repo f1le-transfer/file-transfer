@@ -1,0 +1,131 @@
+version: '3.9'
+
+services: 
+  node-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: node-app
+    env_file: .env
+    environment:
+      - MONDO_PROTOCOL=mongodb
+      - MONGO_USERNAME=$MONGO_USERNAME
+      - MONGO_PASSWORD=$MONGO_PASSWORD
+      - MONGO_HOSTNAME=mongo1
+      - MONGO_PORT=27017 # default mongo port
+      - MONGO_DB=$MONGO_DB
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    networks: 
+      - app-network
+    command: npm start
+    depends_on:
+      - mongo-replica-setup
+      - mongo1
+      - mongo2
+      - mongo3
+
+  # setup MongoDB cluster
+  mongo-replica-setup:
+    container_name: mongo-setup
+    image: mongo
+    restart: on-failure
+    networks:
+      - app-network
+    volumes:
+      - ./.docker/mongodb/scripts/mongosetup.sh:/scripts/mongosetup.sh
+    entrypoint: ["bash", "/scripts/mongosetup.sh" ]
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+
+  mongo1:
+    hostname: 'mongo1'
+    container_name: 'mongo1'
+    image: mongo
+    restart: 'on-failure'
+    command: ["-f", "/etc/mongod.conf", "--keyFile", "/auth/file.key", "--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all"]
+    networks: 
+      - app-network
+    volumes:
+      - mongoData1:/data/db
+      - mongoLog1:/var/log/mongodb
+      - ./.docker/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+      - ./.docker/mongodb/mongod.conf:/etc/mongod.conf
+      - ./.docker/mongodb/file.key:/auth/file.key
+    healthcheck:
+      test: test $$(echo "rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --quiet) -eq 1
+      interval: 30s
+      start_period: 60s
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+
+  mongo2:
+    hostname: 'mongo2'
+    container_name: 'mongo2'
+    image: mongo
+    command: ["-f", "/etc/mongod.conf", "--keyFile", "/auth/file.key", "--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all"]
+    restart: 'on-failure'
+    networks: 
+      - app-network
+    volumes:
+      - mongoData2:/data/db
+      - mongoLog2:/var/log/mongodb
+      - ./.docker/mongodb/mongod.conf:/etc/mongod.conf
+      - ./.docker/mongodb/file.key:/auth/file.key
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    depends_on: 
+      - mongo1
+
+  mongo3:
+    hostname: 'mongo3'
+    container_name: 'mongo3'
+    image: mongo
+    command: ["-f", "/etc/mongod.conf", "--keyFile", "/auth/file.key", "--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all"]
+    restart: 'on-failure'
+    networks: 
+      - app-network
+    volumes:
+      - mongoData3:/data/db
+      - mongoLog3:/var/log/mongodb
+      - ./.docker/mongodb/mongod.conf:/etc/mongod.conf
+      - ./.docker/mongodb/file.key:/auth/file.key
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    depends_on: 
+      - mongo1
+
+volumes: 
+  mongoData1:
+  mongoData2:
+  mongoData3:
+  mongoLog1:
+  mongoLog2:
+  mongoLog3:
+  node_modules:
+
+networks: 
+  app-network: 
+    driver: bridge
