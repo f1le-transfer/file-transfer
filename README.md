@@ -72,6 +72,20 @@ docker run -dp 80:80 file-transfer
 
 ## Additional information
 
+## Docker-compose MongoDB Cluster (replica set)
+
+### [Keyfile Security](https://docs.mongodb.com/manual/tutorial/deploy-replica-set-with-keyfile-access-control/index.html#keyfile-security)
+
+The replica set uses the Key file. Key files are minimal forms of security and are best suited for test or development environments. For production environments, we recommend using [x.509 certificates](https://docs.mongodb.com/manual/core/security-x.509/).
+
+To generate a key file use the following command:
+``` shell
+openssl rand -base64 700 > file.key
+chmod 400 file.key
+```
+
+Run docker-compose: `docker-compose up --build -d`
+
 ### Subscribers
 
 `/src/server/subscribers/`
