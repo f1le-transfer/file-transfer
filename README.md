@@ -60,16 +60,6 @@ Dev server:
 npm run watch:dev
 ```
 
-Docker:
-
-```shell
-docker build -t file-transfer -f $PWD/etc/Dockerfile $PWD
-```
-
-```shell
-docker run -dp 80:80 file-transfer 
-```
-
 ## Additional information
 
 ## Docker-compose MongoDB Cluster (replica set)
