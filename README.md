@@ -14,7 +14,7 @@
 
 <p>Documentation will be updated. 🙂</p>
 
-Current stage of the project: <u>working on project documentation</u>.
+Current stage of the project: determine the technologies to be used for file sharing.
 
 #### Frequent errors:
 
