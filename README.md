@@ -14,7 +14,7 @@
 
 <p>Documentation will be updated. 🙂</p>
 
-Current stage of the project: determine the technologies to be used for file sharing.
+Current stage of the project: Developing System Design for file transfer and defining technologies.
 
 #### Frequent errors:
 
