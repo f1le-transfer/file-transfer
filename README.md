@@ -76,6 +76,11 @@ chmod 400 file.key
 
 Run docker-compose: `docker-compose up --build -d`
 
+## HTTPS and SSL
+To create locally-trusted development certificates for localhost used - [mkcert](https://github.com/FiloSottile/mkcert).
+
+## How some parts of the app work..
+
 ### Subscribers
 
 `/src/server/subscribers/`
