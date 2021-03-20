@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import UsersDAO from '../../build/server/dao/users.dao';
 import TrackAFK_DAO from '../../build/server/dao/TrackAFK.dao';
 
-const root = `http://localhost:${process.env.PORT}`;
+const root = `http://localhost:${process.env.HTTP_PORT}`;
 
 const toJSON = async (raw) => raw.json()
 const options = (body, headers={}, method='POST') => ({

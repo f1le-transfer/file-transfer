@@ -37,6 +37,6 @@ client.connect()
 
    await UsersDAO.injectDB(client)
    await TrackAFK_DAO.injectDB(client)
-   console.log('\x1b[35m%s\x1b[0m', `The server is running on port ${process.env.PORT}\n`)
+   console.log('\x1b[35m%s\x1b[0m', `The https server is running on port ${process.env.PORT} and http ${process.env.HTTP_PORT}\n`)
  })
  .catch(console.log)
