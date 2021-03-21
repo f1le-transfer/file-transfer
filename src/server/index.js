@@ -1,5 +1,6 @@
 /* Set config */
 import { pino } from '../../build/index.conf.js';
+import path from 'path';
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -15,9 +16,7 @@ app.use(compression())
 // Connect logs
 app.use(pino)
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>')
-})
+app.use('/', express.static(path.join(process.env.PWD, 'src', 'client')))
 
 // Routes
 import files from './routes/files.route';
