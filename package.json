@@ -26,7 +26,8 @@
     "ignore": [
       "**/__tests__/**",
       "*.test.js",
-      "*.spec.js"
+      "*.spec.js",
+      "src/client/manifest.json"
     ]
   },
   "author": "loveyousomuch554@gmail.com",
