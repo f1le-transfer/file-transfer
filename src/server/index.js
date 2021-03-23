@@ -13,6 +13,13 @@ app.use(cors()) // Cors for testing API
 app.use(bodyParser.json())
 app.use(compression())
 
+app.use((req, res, next) => {
+  if (!req.secure) {
+    return res.redirect(308, 'https://' + req.headers.host + (req.url || ''))
+  }
+  next()
+})
+
 // Connect logs
 app.use(pino)
 
@@ -26,6 +33,6 @@ app.use('/files', files)
 app.use('/users', users)
 
 // Handling invalid requests.
-app.use((req, res) => res.sendStatus(404) )
+app.use((req, res) => res.sendStatus(404))
 
 export default app
