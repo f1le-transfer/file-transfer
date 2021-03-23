@@ -15,7 +15,7 @@ const httpsServer = https.createServer(credentials, app)
 
 // Connect mongoDB and run app (express server)
 import('./loaders/mongo.loader').then(() => { 
-    httpsServer.listen(process.env.PORT); /*app.listen(process.env.PORT)*/
-    app.listen(process.env.HTTP_PORT);
+    httpsServer.listen(process.env.PORT)
+    app.listen(process.env.HTTP_PORT)
   }
 )
