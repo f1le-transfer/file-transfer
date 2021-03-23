@@ -1,0 +1,16 @@
+{
+  "name": "File-transfer",
+  "short_name": "File-transfer",
+  "description": "Service for fast data exchange and co-working.",
+  "icons": [
+    {
+      "src": "/../img/1.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "fullscreen",
+  "theme_color": "#ab5797",
+  "background_color": "#ab5797"
+}
