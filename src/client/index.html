@@ -14,39 +14,12 @@
     <script src="/status.js"></script>
     <script>
       // Channel for communicate between window and worker
-      // const broadcast = new BroadcastChannel('tcp_channel'); 
-      // broadcast.addEventListener('message', (e) => {
-      //   console.log(`[From Service Worker] ${e.data}`)
-      // })
+      const broadcast = new BroadcastChannel('tcp_channel'); 
+      broadcast.addEventListener('message', ({ data }) => console.log(data))
 
-      // document.getElementById('send_btn').onclick = () => {
-      //   broadcast.postMessage({ type: 'MSG_ID', type: "POST", file_name: "saa" })
-      // };
-      const webSocketWorker = new SharedWorker('tcp_conn.js')
-      
-      const sendMessageToSocket = message => {
-        webSocketWorker.port.postMessage({ 
-          action: 'send', 
-          value: message,
-        });
-      }
-
-
-      webSocketWorker.port.addEventListener('message', ({ data }) => {
-        console.log(data)
-      });
-
-
-      webSocketWorker.port.start();
-
-      window.addEventListener('beforeunload', () => {
-        webSocketWorker.port.postMessage({ 
-          action: 'unload', 
-          value: null,
-        });
-
-        webSocketWorker.port.close();
-      });
+      document.getElementById('send_btn').onclick = () => {
+        broadcast.postMessage({ msg: "something" })
+      };
     </script>
   </body>
 </html>
