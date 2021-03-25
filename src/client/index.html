@@ -7,8 +7,46 @@
     <meta name="theme-color" content="#764ABC"/>
   </head>
   <body>
-    <span>You are now</span> <span><b class="page-status">online</b></span>
+    <span>You are now</span> <span><b class="page-status">online</b></span><br>
+    <button id="send_btn">send file</button>
+
     <script src="/pwa.js"></script>
     <script src="/status.js"></script>
+    <script>
+      // Channel for communicate between window and worker
+      // const broadcast = new BroadcastChannel('tcp_channel'); 
+      // broadcast.addEventListener('message', (e) => {
+      //   console.log(`[From Service Worker] ${e.data}`)
+      // })
+
+      // document.getElementById('send_btn').onclick = () => {
+      //   broadcast.postMessage({ type: 'MSG_ID', type: "POST", file_name: "saa" })
+      // };
+      const webSocketWorker = new SharedWorker('tcp_conn.js')
+      
+      const sendMessageToSocket = message => {
+        webSocketWorker.port.postMessage({ 
+          action: 'send', 
+          value: message,
+        });
+      }
+
+
+      webSocketWorker.port.addEventListener('message', ({ data }) => {
+        console.log(data)
+      });
+
+
+      webSocketWorker.port.start();
+
+      window.addEventListener('beforeunload', () => {
+        webSocketWorker.port.postMessage({ 
+          action: 'unload', 
+          value: null,
+        });
+
+        webSocketWorker.port.close();
+      });
+    </script>
   </body>
 </html>
