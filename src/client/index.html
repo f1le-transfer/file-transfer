@@ -18,7 +18,7 @@
       broadcast.addEventListener('message', ({ data }) => console.log(data))
 
       document.getElementById('send_btn').onclick = () => {
-        broadcast.postMessage({ msg: "something" })
+        broadcast.postMessage({ msg: prompt('msg?') })
       };
     </script>
   </body>
