@@ -26,39 +26,46 @@
       document.getElementById('open_btn').addEventListener('click', async () => {
         // Destructure the one-element array.
         [fileHandle] = await window.showOpenFilePicker();
+        const [filename, ext] = fileHandle.name.split('.')
 
         const file = await fileHandle.getFile();
         const file_stream = file.stream();
 
         new Promise((resolve, reject) => {
           const reader = file_stream.getReader()
-          resolve(new ReadableStream({
-            start(controller) {
-              // The following function handles each data chunk
-              function push() {
-                // "done" is a Boolean and value a "Uint8Array"
-                reader.read().then( ({done, value}) => {
-                  // If there is no more data to read
-                  if (done) {
-                    console.log(`Done:`, done);
-                    controller.close();
-                    return;
+          resolve({
+            filename,
+            ext,
+            stream:
+              new ReadableStream({
+                start(controller) {
+                  // The following function handles each data chunk
+                  function push() {
+                    // "done" is a Boolean and value a "Uint8Array"
+                    reader.read({ byob: 4096 }).then( ({done, value}) => {
+                      // If there is no more data to read
+                      if (done) {
+                        console.log(`Done:`, done);
+                        controller.close();
+                        return;
+                      }
+                      // Get the data and send it to the browser via the controller
+                      controller.enqueue(value);
+                      // Check chunks by logging to the console
+                      console.log(`Done:`, done, 'length:', value.length, Object.getPrototypeOf(value));
+                      push();
+                    })
                   }
-                  // Get the data and send it to the browser via the controller
-                  controller.enqueue(value);
-                  // Check chunks by logging to the console
-                  console.log(`Done:`, done, 'length:', value.length, Object.getPrototypeOf(value));
                   push();
-                })
-              }
-              push();
-            }
-          }));
+                }
+              })
+          })
         })
-        .then(stream => {
-          return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+        .then(({ stream, filename, ext}) => {
+          return new Response(stream, { headers: { "Content-Type": "text/html", "filename": filename } }).text();
         })
         .then(result => {
+          console.log(result)
           broadcast.postMessage({ msg: result })
         })
       });
