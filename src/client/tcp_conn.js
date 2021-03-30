@@ -1,5 +1,4 @@
-const socket = new WebSocket("ws://127.0.0.1:5050");
-
+const socket = new WebSocket("ws://127.0.0.1:5050")
 const broadcast = new BroadcastChannel('tcp_channel')
 
 broadcast.addEventListener('message', ({ data }) => {
@@ -19,5 +18,6 @@ socket.onclose = function(event) {
 }
 
 socket.onerror = function(error) {
-  console.log(`[TCP error] ${error.message}`);
+  console.log(`[TCP error] ⬇️`);
+  console.log(error)
 }
