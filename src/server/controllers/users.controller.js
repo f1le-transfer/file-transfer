@@ -398,7 +398,7 @@ class UserController {
 
   /**
    * Middleware for checking the user's token and password before request.
-   * @name authenticate
+   * @name authenticate_personal_data
    * @function
    * @param {String} req.header('Authorization') - JWT token
    * @param {String} req.params.username - username
@@ -407,7 +407,7 @@ class UserController {
    * @param {Object} res - response object
    * @param {Function} next - callback
    */
-  static async authenticate(req, res, next) {
+  static async authenticate_personal_data(req, res, next) {
     try {
       const userJwt = req.get("Authorization")?.slice("Bearer ".length)
       const url_username = req?.params?.username
