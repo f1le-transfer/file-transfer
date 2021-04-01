@@ -8,8 +8,8 @@
   </head>
   <body>
     <span>You are now</span> <span><b class="page-status">online</b></span><br>
-    <button id="open_btn">open file</button><br>
-    <button id="send_btn">send file</button>
+    <button id="open_btn">send file</button><br>
+    <button id="send_btn">send message to the tcp server</button>
 
     <script src="/pwa.js"></script>
     <script src="/status.js"></script>
@@ -30,44 +30,8 @@
 
         const file = await fileHandle.getFile();
         const file_stream = file.stream();
-
-        new Promise((resolve, reject) => {
-          const reader = file_stream.getReader()
-          resolve({
-            filename,
-            ext,
-            stream:
-              new ReadableStream({
-                start(controller) {
-                  // The following function handles each data chunk
-                  function push() {
-                    // "done" is a Boolean and value a "Uint8Array"
-                    reader.read({ byob: 4096 }).then( ({done, value}) => {
-                      // If there is no more data to read
-                      if (done) {
-                        console.log(`Done:`, done);
-                        controller.close();
-                        return;
-                      }
-                      // Get the data and send it to the browser via the controller
-                      controller.enqueue(value);
-                      // Check chunks by logging to the console
-                      console.log(`Done:`, done, 'length:', value.length, Object.getPrototypeOf(value));
-                      push();
-                    })
-                  }
-                  push();
-                }
-              })
-          })
-        })
-        .then(({ stream, filename, ext}) => {
-          return new Response(stream, { headers: { "Content-Type": "text/html", "filename": filename } }).text();
-        })
-        .then(result => {
-          console.log(result)
-          broadcast.postMessage({ msg: result })
-        })
+        
+        console.log(file_stream)
       });
     </script>
   </body>
