@@ -7,8 +7,13 @@
  */
 import { Router } from 'express';
 import FileController from '../controllers/files.controller';
+import UserCtrl from '../controllers/users.controller';
 const _Router = Router()
 
+_Router.get('/', (req, res) => res.redirect('/files_main.html'))
+
+// Authenticate every request
+_Router.use(UserCtrl.authenticate)
 _Router.post('/', (req, res) => {
   res.send('echo from file route - POST /file')
 })

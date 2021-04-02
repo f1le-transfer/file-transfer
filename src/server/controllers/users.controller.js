@@ -397,6 +397,43 @@ class UserController {
   }
 
   /**
+   * Middleware for checking the user's token.
+   * @name authenticate
+   * @function
+   * @param {String} req.header('Authorization') - JWT token
+   * @param {Object} req - request object
+   * @param {Object} res - response object
+   * @param {Object} next - callback
+   */
+  static async authenticate(req, res, next) {
+    try {
+      const userJwt = req.get("Authorization")?.slice("Bearer ".length)
+
+      // User data from token
+      const userClaim = await User.decoded(userJwt)
+      if (!userJwt || userClaim.error) {
+        res.status(401).json({ error: 'Verify that the user data is correct.' })
+        return
+      }   
+      
+      // Is user exist
+      const userData = await UsersDAO.getUser(userClaim?.username)
+      if (!userData) {
+        res.status(401).json({ error: 'Verify that the data is correct.' })
+        return
+      } else if (userData.error) {
+        res.status(500).json({ error: 'Internal error while update user.' })
+        return
+      }
+
+      next()
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: 'Internal error while verify user.' })
+    }
+  }
+
+  /**
    * Middleware for checking the user's token and password before request.
    * @name authenticate_personal_data
    * @function
@@ -446,7 +483,7 @@ class UserController {
       next()
     } catch(error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal error while deleting user.' })
+      res.status(500).json({ error: 'Internal error while verify user.' })
     }
   }
 
@@ -509,7 +546,7 @@ class UserController {
 
       const updatedUser = await logoutAndUpdateUsr(newUser.user.value, user.username)
       if (updatedUser.error) {
-        res.status(500).json({ error: 'Internal error while deleting user.' })
+        res.status(500).json({ error: 'Internal error while update user.' })
         return
       }
 
@@ -566,7 +603,7 @@ class UserController {
       res.status(200).json(updatedUser)
     } catch(error) {
       console.log(error)
-      res.status(500).json({ error: 'Internal error while deleting user.' })
+      res.status(500).json({ error: 'Internal error while update user.' })
     }
   }
 }
