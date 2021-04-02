@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth</title>
+</head>
+<body>
+  <button id="reg_btn">Registration</button><br>
+  <button id="login_btn">Login</button>
+  <script>
+    document.getElementById('reg_btn').addEventListener('click', () => registration());
+    document.getElementById('login_btn').addEventListener('click', () => login());
+
+    function registration() {
+      const username = prompt('username?')
+      const pwd = prompt('password?')
+
+      const myHeaders = new Headers()
+      myHeaders.append("Content-Type", "application/json")
+
+      const raw = JSON.stringify({ username, pwd })
+
+      let requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      }
+
+      fetch("http://localhost/users/register", requestOptions)
+        .then(async response => {
+          if (response.status !== 200) {
+            console.log(response)
+            alert('error')
+          } else {
+            console.log(await response.text())
+            alert('done')
+          }
+        })
+        .catch(err => {
+          alert('error')
+          console.error(err)
+        });
+    }
+
+    function login() {
+      const username = prompt('username?')
+      const pwd = prompt('password?')
+
+      let myHeaders = new Headers()
+      myHeaders.append("Content-Type", "application/json")
+
+      let raw = JSON.stringify({ username, pwd })
+
+      let requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      };
+
+      fetch("http://localhost/users/login", requestOptions)
+        .then(async response => {
+          let data;
+          if (response.status !== 200) {
+            console.log(response)
+            alert('error')
+          } else {
+            data = JSON.parse(await response.text())
+            save_token(data)
+            console.log(data)
+            alert('done')
+          }
+        })
+        .catch(err => {
+          alert('error')
+          console.error(err)
+        });
+    }
+
+    function save_token({ token }) {
+      const current_date = new Date().getTime()
+      const obj = JSON.stringify({
+        token,
+        date: current_date
+      })
+      localStorage.setItem('token', obj)
+    };
+  </script>
+</body>
+</html>
