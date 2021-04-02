@@ -6,8 +6,9 @@ const toCache = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/pwa.js',
-  '/status.js',
+  'js/pwa.js',
+  'js/status.js',
+  'js/compare_token.js',
   '/img/1.png',
 ];
 

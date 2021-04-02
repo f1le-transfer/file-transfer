@@ -11,11 +11,14 @@
     <button id="open_btn">send file</button><br>
     <button id="send_btn">send message to the tcp server</button>
 
-    <script src="/pwa.js"></script>
-    <script src="/status.js"></script>
+    <script src="js/pwa.js"></script>
+    <script src="js/status.js"></script>
+    <script src="js/compare_token.js"></script>
     <script>
+      compare_token()
+
       // Channel for communicate between window and worker
-      const broadcast = new BroadcastChannel('tcp_channel'); 
+      const broadcast = new BroadcastChannel('tcp_channel');
       broadcast.addEventListener('message', ({ data }) => console.log(data))
 
       document.getElementById('send_btn').onclick = () => {

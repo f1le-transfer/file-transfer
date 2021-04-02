@@ -7,7 +7,7 @@ function init() {
       .then(reg => log('Registered', reg))
       .catch(err => console.error('Not registered ->', err))
     
-    navigator.serviceWorker.register('/tcp_conn.js')
+    navigator.serviceWorker.register('js/tcp_conn.js')
       .then(reg => log('Registered', reg))
       .catch(err => console.error('Not registered ->', err))
   }
