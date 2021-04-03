@@ -1,4 +1,3 @@
-console.log('[Service Worker] This service worker do something...')
 const log = (info, color='green') => console.log(`%c${info}`, `color: ${color};`)
 
 const CACHE_NAME = 'sw-cache-example';
