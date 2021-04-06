@@ -11,31 +11,169 @@
     <button id="open_btn">send file</button><br>
     <button id="send_btn">send message to the tcp server</button>
 
+    <hr><br>
+
+    <div>
+      <form id="fileInfo">
+        <input type="file" id="foleInput" name="files">
+      </form>
+      <button id="sendFile">Send file</button>
+      <button id="abortButton">Abort file transfer</button>
+    </div>
+
     <script src="js/pwa.js"></script>
     <script src="js/status.js"></script>
     <script src="js/compare_token.js"></script>
     <script>
+      'use strict';
       compare_token()
+
+      let peerConnection;
+      let sendChannel;
+
+      const elem = (id_name) => document.getElementById(id_name)
+      const log = (...info) => console.log('%c[RTC]', `color: green;`, ...info)
 
       // Channel for communicate between window and worker
       const broadcast = new BroadcastChannel('tcp_channel');
-      broadcast.addEventListener('message', ({ data }) => console.log(data))
-
+      broadcast.addEventListener('message', async ({ data }) => {
+        if (!data.offer) {
+          console.log(data)
+        }
+      })
+      // Send message to the tcp server
+      const send_to_server = (data) => {
+        if (data.offer) {
+          return new Promise((resolve, reject) => {
+            broadcast.postMessage(data)
+            broadcast.addEventListener('message', ({ data }) => {
+              if ('offer' in data) {
+                console.log('OFFER from server', data)
+                resolve(data)
+              }
+            })
+          })
+        }
+        broadcast.postMessage(data)
+      }
       document.getElementById('send_btn').onclick = () => {
-        broadcast.postMessage({ msg: prompt('msg?') })
+        send_to_server({ msg: prompt('msg?') })
       };
 
-      let fileHandle;
-      document.getElementById('open_btn').addEventListener('click', async () => {
-        // Destructure the one-element array.
-        [fileHandle] = await window.showOpenFilePicker();
-        const [filename, ext] = fileHandle.name.split('.')
+      elem('sendFile').onclick = createConnection
 
-        const file = await fileHandle.getFile();
-        const file_stream = file.stream();
-        
-        console.log(file_stream)
-      });
+      // Create RTC peer connection
+      async function createConnection() {
+        // Create peerConnection on server side
+        // send_to_server({ peerConnection: true })
+
+        /**
+         * Configuration for peer connection
+         * https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection
+         */
+        const configuration = {
+          iceServers: [{'urls': 'stun:stun.l.google.com:19302'}],
+          sdpSemantics: 'unified-plan',
+          // sdpSemantics: 'plan-b', // another future of the sdpSemantics
+          bundlePolicy: "max-compat"
+        }
+
+        peerConnection = new RTCPeerConnection(configuration)
+        log('Created local peer connection object peerConnection.')
+
+        peerConnection.addEventListener('icecandidate', e => {
+          if (e.candidate) {
+            new Promise((resolve, reject) => {
+              function checkState() {
+                  if (peerConnection.iceGatheringState === 'complete') {
+                    peerConnection.removeEventListener('icegatheringstatechange', checkState);
+                    resolve();
+                  }
+                }
+                peerConnection.addEventListener('icegatheringstatechange', checkState)
+            })
+            .then(() => {
+              send_to_server({ 'new-ice-candidate':  JSON.stringify(e.candidate) })
+            })
+          }
+        })
+
+        peerConnection.addEventListener('icegatheringstatechange', () => {
+          log('icegatheringstatechange', peerConnection.iceGatheringState)
+        })
+
+        peerConnection.addEventListener('iceconnectionstatechange', () => {
+          log('iceconnectionstatechange', peerConnection.iceConnectionState)
+        })
+
+        peerConnection.addEventListener('signalingstatechange', () => {
+          log('signalingstatechange: ', peerConnection.signalingState)
+        })
+
+        /**
+         * Options for data channel
+         * https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel
+         */
+         const channel_options = {
+          protocol: 'TCP'
+        }
+
+        // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel
+        sendChannel = peerConnection.createDataChannel('ft', channel_options)
+        // https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/binaryType
+        sendChannel.binaryType = 'arraybuffer'
+        log('Created send data channel.') 
+
+        sendChannel.addEventListener('open', onSendChannelStateChange);
+        sendChannel.addEventListener('close', onSendChannelStateChange);
+        sendChannel.addEventListener('error', onError);
+        sendChannel.addEventListener('message', (d) => log('Data from channel', d))
+
+        peerConnection.createOffer()
+          .then(offer => peerConnection.setLocalDescription(offer))
+          .then(() => {
+            // Wait until peer complete
+            return new Promise((resolve, reject) => {
+              if (peerConnection.iceGatheringState === 'complete') {
+                resolve()
+              } else {
+                function checkState() {
+                  if (peerConnection.iceGatheringState === 'complete') {
+                    peerConnection.removeEventListener('icegatheringstatechange', checkState);
+                    resolve();
+                  }
+                }
+                peerConnection.addEventListener('icegatheringstatechange', checkState)
+              }
+            })
+          })
+          .then(() => {
+            // Send over out signaling server offer
+            const offer = peerConnection.localDescription
+            return send_to_server({ offer: JSON.stringify(offer) })
+          })
+          .then(async (data) => {
+            // Receive offer from remote peer and set it
+            const remoteDesc = new RTCSessionDescription(data.offer)
+            log('Remote desc', remoteDesc)
+            await peerConnection.setRemoteDescription(remoteDesc)
+          })
+      }
+
+      function onSendChannelStateChange() {
+        if (sendChannel) {
+          const { readyState } = sendChannel
+          log('Send channel state is:', readyState)
+          if (readyState === 'open') {
+            // here function sendData()
+            console.log(1)
+          }
+        }
+      }
+
+      function onError(error) {
+        console.error('Error in sendChannel:', error)
+      }
     </script>
   </body>
 </html>
