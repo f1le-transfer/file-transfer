@@ -1,12 +1,13 @@
-let socket;
+let socket = set_socket(new WebSocket("ws://127.0.0.1:5050"))
 const broadcast = new BroadcastChannel('tcp_channel')
 
 broadcast.addEventListener('message', ({ data }) => {
-  if (data.msg === 'connect') {
-    socket = set_socket(new WebSocket("ws://127.0.0.1:5050"))
-  } else {
-    socket.send(JSON.stringify(data))
-  }
+  // if (data.msg === 'connect') {
+  //   socket = set_socket(new WebSocket("ws://127.0.0.1:5050"))
+  // } else {
+  //   socket.send(JSON.stringify(data))
+  // }
+  socket.send(JSON.stringify(data))
 })
 
 function set_socket(socket) {
@@ -15,7 +16,8 @@ function set_socket(socket) {
   }
   
   socket.onmessage = function(event) {
-    console.log(`[TCP msg] ${event.data}`)
+    const msg = JSON.parse(event.data)
+    broadcast.postMessage(msg)
   }
   
   socket.onclose = function(event) {
