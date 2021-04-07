@@ -15,10 +15,10 @@
 
     <div>
       <form id="fileInfo">
-        <input type="file" id="foleInput" name="files">
+        <input type="file" id="fileInput" name="files">
       </form>
       <button id="sendFile">Send file</button>
-      <button id="abortButton">Abort file transfer</button>
+      <!-- <button id="abortButton">Abort file transfer</button> -->
     </div>
 
     <div>
@@ -34,6 +34,7 @@
 
       let peerConnection;
       let sendChannel;
+      let fileReader;
 
       const elem = (id_name) => document.getElementById(id_name)
       const log = (...info) => console.log('%c[RTC]', `color: green;`, ...info)
@@ -42,7 +43,7 @@
       const broadcast = new BroadcastChannel('tcp_channel');
       broadcast.addEventListener('message', async ({ data }) => {
         if (!data.offer) {
-          console.log(data)
+          console.log('[WS MSG]', data)
         }
       })
       // Send message to the tcp server
@@ -102,16 +103,12 @@
           }
         })
 
-        peerConnection.addEventListener('icegatheringstatechange', () => {
-          log('icegatheringstatechange', peerConnection.iceGatheringState)
-        })
-
         peerConnection.addEventListener('iceconnectionstatechange', () => {
-          log('iceconnectionstatechange', peerConnection.iceConnectionState)
+          log('iceconnectionstatechange:', peerConnection.iceConnectionState)
         })
 
         peerConnection.addEventListener('signalingstatechange', () => {
-          log('signalingstatechange: ', peerConnection.signalingState)
+          log('signalingstatechange:', peerConnection.signalingState)
         })
 
         /**
@@ -170,12 +167,35 @@
           log('Send channel state is:', readyState)
           if (readyState === 'open') {
             // here function sendData()
-            sendData()
+            sendFile()
           }
         }
       }
 
-      function sendData() {
+      function sendFile() {
+        const file = elem('fileInput').files[0]
+        const chunkSize = 16384
+        fileReader = new FileReader()
+        let offset = 0 
+
+        fileReader.addEventListener('error', error => console.error('[File] reading file:', error));
+        fileReader.addEventListener('abort', event => console.log('[File] reading aborted:', event));
+        fileReader.addEventListener('load', e => {
+          console.log('[FILE] load', e);
+          sendChannel.send(e.target.result);
+          offset += e.target.result.byteLength;
+          // sendProgress.value = offset;
+          if (offset < file.size) {
+            readSlice(offset);
+          }
+        });
+        const readSlice = o => {
+          console.log('[READ] readSlice', o);
+          const slice = file.slice(offset, o + chunkSize);
+          fileReader.readAsArrayBuffer(slice);
+        };
+        readSlice(0);
+
         sendChannel.send('Hello')
         elem('wb_test').addEventListener('click', () => {
           sendChannel.send(prompt('msg to webRTC?'))
