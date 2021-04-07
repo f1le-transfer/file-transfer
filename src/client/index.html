@@ -21,6 +21,10 @@
       <button id="abortButton">Abort file transfer</button>
     </div>
 
+    <div>
+      <button id="wb_test">Send msg via webRTC</button>
+    </div>
+
     <script src="js/pwa.js"></script>
     <script src="js/status.js"></script>
     <script src="js/compare_token.js"></script>
@@ -166,9 +170,16 @@
           log('Send channel state is:', readyState)
           if (readyState === 'open') {
             // here function sendData()
-            console.log(1)
+            sendData()
           }
         }
+      }
+
+      function sendData() {
+        sendChannel.send('Hello')
+        elem('wb_test').addEventListener('click', () => {
+          sendChannel.send(prompt('msg to webRTC?'))
+        })
       }
 
       function onError(error) {
