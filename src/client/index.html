@@ -8,21 +8,13 @@
   </head>
   <body>
     <span>You are now</span> <span><b class="page-status">online</b></span><br>
-    <button id="open_btn">send file</button><br>
     <button id="send_btn">send message to the tcp server</button>
-
     <hr><br>
-
     <div>
       <form id="fileInfo">
         <input type="file" id="fileInput" name="files">
       </form>
       <button id="sendFile">Send file</button>
-      <!-- <button id="abortButton">Abort file transfer</button> -->
-    </div>
-
-    <div>
-      <button id="wb_test">Send msg via webRTC</button>
     </div>
 
     <script src="js/pwa.js"></script>
@@ -70,7 +62,6 @@
       // Create RTC peer connection
       async function createConnection() {
         // Create peerConnection on server side
-        // send_to_server({ peerConnection: true })
 
         /**
          * Configuration for peer connection
@@ -174,6 +165,17 @@
 
       function sendFile() {
         const file = elem('fileInput').files[0]
+        console.log(`[FILE] ${[file.name, file.size, file.type, file.lastModified].join(' ')}`);
+
+        const file_info = {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          lastModified: file.lastModified
+        }
+        // Send metadata about file
+        sendChannel.send(JSON.stringify(file_info))
+
         const chunkSize = 16384
         fileReader = new FileReader()
         let offset = 0 
@@ -195,11 +197,6 @@
           fileReader.readAsArrayBuffer(slice);
         };
         readSlice(0);
-
-        sendChannel.send('Hello')
-        elem('wb_test').addEventListener('click', () => {
-          sendChannel.send(prompt('msg to webRTC?'))
-        })
       }
 
       function onError(error) {
