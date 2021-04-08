@@ -5,18 +5,38 @@ let peerConnection;
 let sendChannel;
 let fileReader;
 
+/**
+ * Return dom element
+ * @param {object} id_name – id of the element
+ * @returns {object}
+ */
 const elem = (id_name) => document.getElementById(id_name)
+
+/**
+ * Log data about RTC
+ * @param  {...any} info – information
+ * @returns {undefined}
+ */
 const log = (...info) => console.log('%c[RTC]', `color: green;`, ...info)
 
-// Channel for communicate between window and worker
+// Channel for communicate between window and worker(tcp_conn.js)
 const broadcast = new BroadcastChannel('tcp_channel');
 broadcast.addEventListener('message', async ({ data }) => {
   if (!data.offer) {
     console.log('[WS MSG]', data)
   }
 })  
-// Send message to the tcp server
+
+/**
+ * Send message\object to the tcp server
+ * @param {*} data – data for server 
+ * @returns {undefined}
+ */
 const send_to_server = (data) => {
+  /**
+   * If websocket connection use like signaling channel
+   * then we send offer and wait until server send offer back.
+   */
   if (data.offer) {
     return new Promise((resolve, reject) => {
       broadcast.postMessage(data)
@@ -36,7 +56,10 @@ document.getElementById('send_btn').onclick = () => {
 
 elem('sendFile').onclick = createConnection
 
-// Create RTC peer connection
+/**
+ * Create RTC peer connection
+ * @returns {undefined}
+ */
 async function createConnection() {
   /**
    * Configuration for peer connection
@@ -54,6 +77,10 @@ async function createConnection() {
 
   peerConnection.addEventListener('icecandidate', e => {
     if (e.candidate) {
+      /**
+       * Wait until iceGatheringState complete
+       * then send ice candidate to the server.
+       */
       new Promise((resolve, reject) => {
         function checkState() {
           if (peerConnection.iceGatheringState === 'complete') {
@@ -85,11 +112,18 @@ async function createConnection() {
     protocol: 'TCP'
   }
 
-  // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel
+  /**
+   * createDataChannel docs
+   * https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel
+   */
   sendChannel = peerConnection.createDataChannel('ft', channel_options)
-  // https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/binaryType
+
+  /**
+   * sendChannel options docs
+   * https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/binaryType
+   */
   sendChannel.binaryType = 'arraybuffer'
-  log('Created send data channel.') 
+  log('Created send data channel.')
 
   sendChannel.addEventListener('open', onSendChannelStateChange);
   sendChannel.addEventListener('close', onSendChannelStateChange);
@@ -127,17 +161,28 @@ async function createConnection() {
     })
 }
 
+/**
+ * Handle sendChannel state
+ * @returns {undefined}
+ */
 function onSendChannelStateChange() {
   if (sendChannel) {
     const { readyState } = sendChannel
     log('Send channel state is:', readyState)
+    /**
+     * When peerConnection establish and sendCannel state is open, 
+     * start sending chunks of the file.
+     */
     if (readyState === 'open') {
-      // here function sendData()
       sendFile()
     }
   }
 }
 
+/**
+ * Send file via peerConnection
+ * @returns {undefined}
+ */
 function sendFile() {
   const file = elem('fileInput').files[0]
   console.log(`[FILE] ${[file.name, file.size, file.type, file.lastModified].join(' ')}`)
@@ -174,6 +219,11 @@ function sendFile() {
   readSlice(0)
 }
 
+/**
+ * Handle error from sendChannel
+ * @param {Error} error
+ * @returns {undefined}
+ */
 function onError(error) {
   console.error('Error in sendChannel:', error)
 }
