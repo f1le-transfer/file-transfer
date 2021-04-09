@@ -1,6 +1,7 @@
 'use strict';
 compare_token()
 
+const HEADER_LEN = 100
 let peerConnection;
 let sendChannel;
 let fileReader;
@@ -184,7 +185,14 @@ function onSendChannelStateChange() {
  * @returns {undefined}
  */
 function sendFile() {
+  /**
+   * To define chunk number we can:
+   * 1. Send two separate message, like first header and second body.
+   * 2. Write json header on the top of the file and send it in one message.
+   * At the moment i use 2 variant.
+   */
   const file = elem('fileInput').files[0]
+  let chunk = 1;
   console.log(`[FILE] ${[file.name, file.size, file.type, file.lastModified].join(' ')}`)
 
   const file_info = {
@@ -205,12 +213,54 @@ function sendFile() {
   fileReader.addEventListener('abort', event => console.log('[File] reading aborted:', event))
   fileReader.addEventListener('load', e => {
     console.log('[FILE] load', e)
-    sendChannel.send(e.target.result)
+    const body_buffer = e.target.result
+    const header = JSON.stringify({ chunk: chunk++ })
+    sendChannel.send(create_full_buffer(header, body_buffer))
     offset += e.target.result.byteLength
     if (offset < file.size) {
       readSlice(offset)
     }
   })
+
+  /**
+   * Concat header buffer and body buffer
+   * @param {String} header 
+   * @param {BufferArray} buf_body
+   * @returns BufferArray
+   */
+  function create_full_buffer(header, buf_body) {
+    let buf_head = str2ab(header)
+    return appendBuffer(buf_head, buf_body)
+  }
+
+  /**
+   * Convert string to the ArrayBuffer.
+   * @param {String} str 
+   * @returns {ArrayBuffer}
+   */
+  function str2ab(str) {
+    if (str.length > HEADER_LEN) {
+      throw new Error('Chunk header length greater then allowed length.')
+    }
+    let buf = new ArrayBuffer(HEADER_LEN)
+    let bufView = new Uint8Array(buf)
+    str.split('').forEach((v, i) => bufView[i] = str.charCodeAt(i))
+    return buf
+  }
+
+  /**
+   * Concat two buffers in one.
+   * @param {ArrayBuffer} b1 
+   * @param {ArrayBuffer} b2 
+   * @returns {Uint8Array}
+   */
+  function appendBuffer(b1, b2) {
+    let tmp_buffer = new Uint8Array(b1.byteLength + b2.byteLength)
+    tmp_buffer.set(new Uint8Array(b1))
+    tmp_buffer.set(new Uint8Array(b2), b1.byteLength)
+    return tmp_buffer
+  }
+
   const readSlice = o => {
     console.log('[READ] readSlice', o)
     const slice = file.slice(offset, o + chunkSize)
