@@ -89,3 +89,11 @@ To create locally-trusted development certificates for localhost used - [mkcert]
 
 After each user login, a session and a `last activity` document (timeout) are created. This timeout defines the amount of time a session will remain active in case there is no activity in the session, closing and invalidating the session upon the defined idle period since the last HTTP request received by the web application for a given session ID.
 Btw, the same result can be achieved using `createIndexes` - <http://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html#createIndexes>
+
+## Validation user credentials
+
+If you want to change the regular expression for user validation ([validateCredential](https://github.com/f1le-transfer/file-transfer/blob/6875ad85ee22493e6a0429d122367758f2762ad6/src/server/controllers/users.controller.js#L104) method), check the expression for ReDoS attack.<br>
+
+### Anti-REDOS Resources:
+- [rxxr2](https://www.cs.bham.ac.uk/~hxt/research/rxxr2/)
+- [safe-regex](https://www.npmjs.com/package/safe-regex)
