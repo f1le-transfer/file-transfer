@@ -1,7 +1,7 @@
 'use strict';
 compare_token()
 
-const HEADER_LEN = 100
+const HEADER_LEN = 200
 let peerConnection;
 let sendChannel;
 let fileReader;
@@ -196,14 +196,14 @@ function sendFile() {
   console.log(`[FILE] ${[file.name, file.size, file.type, file.lastModified].join(' ')}`)
 
   const file_info = {
-    name: file.name,
+    name: file.name.split('.')[0],
+    ext: file.name.split('.')[1],
+    full_name: file.name,
     size: file.size,
     type: file.type,
-    dir: '/test/',
+    dir: '/work-files/',
     lastModified: file.lastModified
   }
-  // Send metadata about file
-  sendChannel.send(JSON.stringify(file_info))
 
   const chunkSize = 16384
   fileReader = new FileReader()
@@ -214,8 +214,10 @@ function sendFile() {
   fileReader.addEventListener('load', e => {
     console.log('[FILE] load', e)
     const body_buffer = e.target.result
-    const header = JSON.stringify({ chunk: chunk++ })
-    sendChannel.send(create_full_buffer(header, body_buffer))
+    const header = JSON.stringify({ chunk: chunk++, ...file_info })
+    console.log(1, header.length)
+    // Set non blocking operation(try btw)
+    setTimeout(() => sendChannel.send(create_full_buffer(header, body_buffer)), 0)
     offset += e.target.result.byteLength
     if (offset < file.size) {
       readSlice(offset)
