@@ -1,4 +1,4 @@
-import app from './index';
+import app from './index.js';
 import fs from 'fs';
 import https from 'https';
 import path from 'path';
@@ -14,7 +14,7 @@ const credentials = {
 const httpsServer = https.createServer(credentials, app)
 
 // Connect mongoDB and run app (express server)
-import('./loaders/mongo.loader').then(() => { 
+import('./loaders/mongo.loader.js').then(() => { 
     httpsServer.listen(process.env.PORT)
     app.listen(process.env.HTTP_PORT)
   }

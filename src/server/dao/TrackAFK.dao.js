@@ -12,8 +12,11 @@
  * @external ObjectID
  * @see {@link https://docs.mongodb.com/manual/reference/method/ObjectId/|ObjectID}
  */
-import { ObjectID } from 'mongodb';
-import UsersDAO from './users.dao';
+// Import ObjectID via mongo_pkg because module 'mongodb' is a CommonJS module, 
+// which may not support all module.exports as named exports.
+import mongo_pkg from 'mongodb';
+const { ObjectID } = mongo_pkg;
+import UsersDAO from './users.dao.js';
 
 /**
  * Connection for timeoutAFK collection.

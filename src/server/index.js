@@ -1,5 +1,5 @@
 /* Set config */
-import { pino } from '../../build/index.conf.js';
+import { pino } from '../../config/index.conf.js';
 import path from 'path';
 
 import express from 'express';
@@ -29,8 +29,8 @@ app.use(pino)
 app.use('/', express.static(path.join(process.env.PWD, 'src', 'client')))
 
 // Routes
-import files from './routes/files.route';
-import users from './routes/users.route';
+import files from './routes/files.route.js';
+import users from './routes/users.route.js';
 
 app.use('/files', files)
 app.use('/users', users)

@@ -21,8 +21,8 @@ import bcrypt from 'bcrypt';
  * @see {@link https://www.npmjs.com/package/jsonwebtoken}
  */
 import jwt from 'jsonwebtoken';
-import UsersDAO from '../dao/users.dao';
-import TrackAFK from '../subscribers/trackAFK.sub';
+import UsersDAO from '../dao/users.dao.js';
+import TrackAFK from '../subscribers/trackAFK.sub.js';
 
 /**
  * Hash password.

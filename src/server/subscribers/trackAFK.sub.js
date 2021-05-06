@@ -5,7 +5,7 @@
  * @requires TrackAFK_DAO
  */
 
-import TrackAFK_DAO from '../dao/TrackAFK.dao';
+import TrackAFK_DAO from '../dao/TrackAFK.dao.js';
 
 /**
  * Contains functions for managing user trackers.

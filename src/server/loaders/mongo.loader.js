@@ -1,6 +1,7 @@
-import { MongoClient } from 'mongodb';
-import UsersDAO from '../dao/users.dao';
-import TrackAFK_DAO from '../dao/TrackAFK.dao';
+import mongo_pkg from 'mongodb';
+const { MongoClient } = mongo_pkg;
+import UsersDAO from '../dao/users.dao.js';
+import TrackAFK_DAO from '../dao/TrackAFK.dao.js';
 
 const {
   MONDO_PROTOCOL,

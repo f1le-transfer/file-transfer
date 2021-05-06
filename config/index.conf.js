@@ -1,8 +1,10 @@
 /* Configure env variables */
 import dotenv from 'dotenv'
 import path from 'path'
+import url from 'url';
 
-dotenv.config({ path: path.join(__dirname, '..', 'config', '.env') })
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, '.env') })
 
 /* Configure log system */
 const formatters = {
@@ -34,7 +36,7 @@ const short_info_opts = {
     ignore: 'pid,hostname,req'
   }
 }
-
-const pino = require('pino-http')(process.env.SHORT_LOG==='false' ? opts : short_info_opts)
+import pino_http from 'pino-http'
+const pino = pino_http(process.env.SHORT_LOG==='false' ? opts : short_info_opts)
 
 export { pino }

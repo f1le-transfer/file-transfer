@@ -7,7 +7,7 @@
  */
 import { Router } from 'express';
 
-import UserCtrl from '../controllers/users.controller'
+import UserCtrl from '../controllers/users.controller.js'
 const _Router = Router()
 
 _Router.get('/auth', (req, res) => res.redirect('/auth.html'))

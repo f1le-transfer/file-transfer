@@ -6,8 +6,8 @@
  * @requires FileController
  */
 import { Router } from 'express';
-import FileController from '../controllers/files.controller';
-import UserCtrl from '../controllers/users.controller';
+import FileController from '../controllers/files.controller.js';
+import UserCtrl from '../controllers/users.controller.js';
 const _Router = Router()
 
 _Router.get('/', (req, res) => res.redirect('/files_main.html'))
