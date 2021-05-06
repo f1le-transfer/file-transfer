@@ -23,6 +23,11 @@ const log = (...info) => console.log('%c[RTC]', `color: green;`, ...info)
 // Channel for communicate between window and worker(tcp_conn.js)
 const broadcast = new BroadcastChannel('tcp_channel');
 broadcast.addEventListener('message', async ({ data }) => {
+  console.log('[WS MSG]', data)
+  if (data.offer && data.remoteConn) {
+    return await receive_file(data)
+  }
+  return
   if (!data.offer) {
     console.log('[WS MSG]', data)
   }
@@ -278,4 +283,42 @@ function sendFile() {
  */
 function onError(error) {
   console.error('Error in sendChannel:', error)
+}
+
+elem('receiveFile').addEventListener('click', () => {
+  send_to_server({ msg: 'receive file' })
+})
+
+async function receive_file(data) {
+  // Create peer connection
+  const configuration = {
+    'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]
+  }
+  const peerConnection = new RTCPeerConnection(configuration)
+
+  // log
+  peerConnection.addEventListener('iceconnectionstatechange', () => {
+    log('iceconnectionstatechange:', peerConnection.iceConnectionState)
+  })
+  // log
+  peerConnection.addEventListener('signalingstatechange', () => {
+    log('signalingstatechange:', peerConnection.signalingState)
+  })
+  // log
+  peerConnection.addEventListener('connectionstatechange', () => {
+    log('connectionstatechange', peerConnection.connectionState)
+  })
+
+  // Set remote description
+  peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer))
+
+  // Send answer
+  const answer = await peerConnection.createAnswer()
+  await peerConnection.setLocalDescription(answer)
+  send_to_server({ answer: JSON.stringify(answer) })
+
+  // Get ice candidate
+  broadcast.addEventListener('message', ({ data }) => {
+    console.log(1, data)
+  })
 }
