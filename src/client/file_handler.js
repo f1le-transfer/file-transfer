@@ -234,7 +234,7 @@ function sendFile() {
    * @returns BufferArray
    */
   function create_full_buffer(header, buf_body) {
-    let buf_head = str2ab(header)
+    let buf_head = str2bu(header)
     return appendBuffer(buf_head, buf_body)
   }
 
@@ -243,7 +243,7 @@ function sendFile() {
    * @param {String} str 
    * @returns {ArrayBuffer}
    */
-  function str2ab(str) {
+  function str2bu(str) {
     if (str.length > HEADER_LEN) {
       throw new Error('Chunk header length greater then allowed length.')
     }
@@ -283,15 +283,23 @@ function onError(error) {
   console.error('Error in sendChannel:', error)
 }
 
+/**
+ * Convert buffer to string.
+ * @param {String} buffer
+ * @returns {ArrayBuffer}
+ */
+  function bu2str(buffer) {
+    return new TextDecoder("utf-8").decode(new Uint8Array(buffer))
+  }
+
 function receiveFile() {
   let file = elem('recvFileName').value
   if (file.length == 0) return console.error('No file name');
 
   file = CURRENT_FILES.find(_file => _file.endsWith(file))
-  console.log(file)
   sendChannel.send(JSON.stringify({
     isRecvFile: true,
     name: file
   }))
-  sendChannel.addEventListener('message', (d) => console.log(d.data))
+  sendChannel.addEventListener('message', (d) => console.log(bu2str(d.data)))
 }
