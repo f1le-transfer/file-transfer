@@ -23,12 +23,7 @@ const log = (...info) => console.log('%c[RTC]', `color: green;`, ...info)
 // Channel for communicate between window and worker(tcp_conn.js)
 const broadcast = new BroadcastChannel('tcp_channel');
 broadcast.addEventListener('message', async ({ data }) => {
-  console.log(1, data)
-  if (data.offer && data.remoteConn) {
-    return receiveFile(data)
-  }
-
-  if (!data.offer) {
+  if (!data.offer && !data.listAvailableFiles && !data.getListAvailableFiles) {
     console.log('[WS MSG]', data)
   }
 })  
@@ -60,13 +55,14 @@ document.getElementById('send_btn').onclick = () => {
   send_to_server({ msg: prompt('msg?') })
 };
 
-elem('sendFile').onclick = createConnection
+elem('sendFile').onclick = () => createConnection('sendFile')
+elem('receiveFile').onclick = () => createConnection('receiveFile')
 
 /**
  * Create RTC peer connection
  * @returns {undefined}
  */
-async function createConnection() {
+async function createConnection(isSendFile) {
   /**
    * Configuration for peer connection
    * https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection
@@ -131,10 +127,10 @@ async function createConnection() {
   sendChannel.binaryType = 'arraybuffer'
   log('Created send data channel.')
 
-  sendChannel.addEventListener('open', onSendChannelStateChange);
-  sendChannel.addEventListener('close', onSendChannelStateChange);
+  sendChannel.addEventListener('open', onSendChannelStateChange.bind(null, isSendFile=='sendFile'));
+  sendChannel.addEventListener('close', onSendChannelStateChange.bind(null, isSendFile=='sendFile'));
   sendChannel.addEventListener('error', onError);
-  sendChannel.addEventListener('message', (d) => log('Data from channel', d))
+  // sendChannel.addEventListener('message', (d) => log('Data from channel', d))
 
   peerConnection.createOffer()
     .then(offer => peerConnection.setLocalDescription(offer))
@@ -171,7 +167,7 @@ async function createConnection() {
  * Handle sendChannel state
  * @returns {undefined}
  */
-function onSendChannelStateChange() {
+function onSendChannelStateChange(isSendFile) {
   if (sendChannel) {
     const { readyState } = sendChannel
     log('Send channel state is:', readyState)
@@ -179,8 +175,10 @@ function onSendChannelStateChange() {
      * When peerConnection establish and sendCannel state is open, 
      * start sending chunks of the file.
      */
-    if (readyState === 'open') {
+    if (readyState === 'open' && isSendFile) {
       sendFile()
+    } else {
+      receiveFile()
     }
   }
 }
@@ -285,23 +283,15 @@ function onError(error) {
   console.error('Error in sendChannel:', error)
 }
 
-elem('receiveFile').addEventListener('click', () => {
-  send_to_server({ createConnection: true })
-})
+function receiveFile() {
+  let file = elem('recvFileName').value
+  if (file.length == 0) return console.error('No file name');
 
-async function receiveFile(data) {
-  const conf = {  
-    'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]
-  }
-
-  peerConnection = new RTCPeerConnection(conf)
-  peerConnection.setRemoteDescription(data.offer)
-  peerConnection.createAnswer()
-    .then(answer => peerConnection.setLocalDescription(answer))
-    .then(() => broadcast.postMessage(JSON.stringify({ offer: peerConnection.currentLocalDescription, answer: true })))
-    // .then(() => {
-    //   broadcast.addEventListener('message', (msg) => {
-    //     console.log(msg)
-    //   })
-    // })
+  file = CURRENT_FILES.find(_file => _file.endsWith(file))
+  console.log(file)
+  sendChannel.send(JSON.stringify({
+    isRecvFile: true,
+    name: file
+  }))
+  sendChannel.addEventListener('message', (d) => console.log(d.data))
 }
