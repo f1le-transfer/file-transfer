@@ -284,22 +284,39 @@ function onError(error) {
 }
 
 /**
- * Convert buffer to string.
- * @param {String} buffer
- * @returns {ArrayBuffer}
+ * Convert buffer to Uint8Array.
+ * @param {BufferArray} buffer
+ * @returns {Uint8Array}
  */
-  function bu2str(buffer) {
-    return new TextDecoder("utf-8").decode(new Uint8Array(buffer))
-  }
+function bu2uInt8(buffer) {
+  // return new TextDecoder("utf-8").decode(new Uint8Array(buffer))
+  return new Uint8Array(buffer)
+}
 
 function receiveFile() {
   let file = elem('recvFileName').value
   if (file.length == 0) return console.error('No file name');
 
-  file = CURRENT_FILES.find(_file => _file.endsWith(file))
+  let file_path = CURRENT_FILES.find(_file => _file.endsWith(file))
   sendChannel.send(JSON.stringify({
     isRecvFile: true,
-    name: file
+    name: file_path
   }))
-  sendChannel.addEventListener('message', (d) => console.log(bu2str(d.data)))
+
+
+  let fileStream = streamSaver.createWriteStream(file)
+  let writer = fileStream.getWriter()
+  let chunks_info, chunks_writed=1;
+  sendChannel.addEventListener('message', ({ data }) => { 
+    if (typeof data === 'string') {
+      chunks_info = JSON.parse(data)
+      console.log(chunks_info)
+    } else if (data instanceof ArrayBuffer) {
+      writer.write(bu2uInt8(data))
+      chunks_writed++
+      if (chunks_writed == chunks_info.len) {
+        writer.close()
+      }
+    }
+  })
 }
