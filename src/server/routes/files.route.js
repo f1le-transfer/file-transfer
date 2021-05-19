@@ -10,7 +10,7 @@ import FileController from '../controllers/files.controller';
 import UserCtrl from '../controllers/users.controller';
 const _Router = Router()
 
-_Router.get('/', (req, res) => res.redirect('/files_main.html'))
+_Router.get('/', (req, res) => res.redirect('/'))
 
 // Authenticate every request
 _Router.use(UserCtrl.authenticate)
