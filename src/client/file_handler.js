@@ -1,7 +1,7 @@
 'use strict';
 compare_token()
 
-const HEADER_LEN = 200
+const HEADER_LEN = 300
 let peerConnection;
 let sendChannel;
 let fileReader;
@@ -214,13 +214,17 @@ function sendFile() {
 
   fileReader.addEventListener('error', error => console.error('[File] reading file:', error))
   fileReader.addEventListener('abort', event => console.log('[File] reading aborted:', event))
-  fileReader.addEventListener('load', e => {
+  fileReader.addEventListener('load', async e => {
     console.log('[FILE] load', e)
     const body_buffer = e.target.result
+    const chunk_hash = await hashChunk(body_buffer)
+    file_info.hash = chunk_hash
     const header = JSON.stringify({ chunk: chunk++, ...file_info })
-    console.log(1, header.length)
-    // Set non blocking operation(try btw)
-    setTimeout(() => sendChannel.send(create_full_buffer(header, body_buffer)), 0)
+
+    console.log('[HEADER LEN]', header.length)
+    if (header.length > HEADER_LEN) throw new Error('File name it too long.');
+
+    sendChannel.send(create_full_buffer(header, body_buffer))
     offset += e.target.result.byteLength
     if (offset < file.size) {
       readSlice(offset)
@@ -319,4 +323,19 @@ function receiveFile() {
       }
     }
   })
+
+  // After sending all chunks to the cloud storage
+  // We need to communicate with Metadata database and send there info about chunks.
+}
+
+/**
+ * Create hash for data chunk
+ * @param {ArrayBuffer} chunk 
+ * @returns {Promise}
+ */
+function hashChunk(chunk) {
+  return crypto.subtle.digest('SHA-256', chunk)
+    .then(hashBuffer => Array.from(new Uint8Array(hashBuffer)))
+    .then(hashArray => hashArray.map(b => b.toString(16).padStart(2, '0')).join(''))
+    .then(hashHex => hashHex)
 }
