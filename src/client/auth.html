@@ -80,10 +80,11 @@
         });
     }
 
-    function save_token({ token }) {
+    function save_token({ token, info: { username } }) {
       const current_date = new Date().getTime()
       const obj = JSON.stringify({
         token,
+        username,
         date: current_date
       })
       localStorage.setItem('token', obj)
