@@ -15,9 +15,9 @@ function getFilesList() {
   const broadcast = new BroadcastChannel('tcp_channel')
   broadcast.addEventListener('message', ({ data }) => {
     if (!data.listAvailableFiles) return;
-    data.listAvailableFiles.forEach(file => {
-      document.getElementById('files').innerHTML += (`<p>${file}</p>`)
-    })
+    for (let file in data.listAvailableFiles) {
+      document.getElementById('files').innerHTML += (`<p>${file+'.'+data.listAvailableFiles[file][0].split('.')[1]}</p>`)
+    }
     CURRENT_FILES = data.listAvailableFiles
   })
 
