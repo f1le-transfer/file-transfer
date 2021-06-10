@@ -6,7 +6,7 @@
  * @requires FileController
  */
 import { Router } from 'express';
-import FileController from '../controllers/files.controller';
+import FileMetadataController from '../controllers/files.controller';
 import UserCtrl from '../controllers/users.controller';
 const _Router = Router()
 
@@ -14,8 +14,8 @@ _Router.get('/', (req, res) => res.redirect('/'))
 
 // Authenticate every request
 _Router.use(UserCtrl.authenticate)
-_Router.post('/', (req, res) => {
-  res.send('echo from file route - POST /file')
-})
+_Router.post('/add', FileMetadataController.add)
+// _Router.get('/info', FileMetadataController.get) 
+_Router.delete('/del', FileMetadataController.remove)
 
 export default _Router
