@@ -1,7 +1,7 @@
 'use strict';
 compare_token()
 
-const HEADER_LEN = 300
+const HEADER_LEN = 500
 let peerConnection;
 let sendChannel;
 let fileReader;
@@ -43,7 +43,6 @@ const send_to_server = (data) => {
       broadcast.postMessage(data)
       broadcast.addEventListener('message', ({ data }) => {
         if ('offer' in data && data.answer) {
-          console.log('OFFER from server', data)
           resolve(data)
         }   
       })
@@ -57,6 +56,7 @@ document.getElementById('send_btn').onclick = () => {
 
 elem('sendFile').onclick = () => createConnection('sendFile')
 elem('receiveFile').onclick = () => createConnection('receiveFile')
+elem('deleteFile').onclick = () => deleteFile()
 
 /**
  * Create RTC peer connection
@@ -158,7 +158,6 @@ async function createConnection(isSendFile) {
     .then(async (data) => {
       // Receive offer from remote peer and set it
       const remoteDesc = new RTCSessionDescription(data.offer)
-      log('Remote desc', remoteDesc)
       await peerConnection.setRemoteDescription(remoteDesc)
     })
 }
@@ -195,6 +194,7 @@ function sendFile() {
    * At the moment i use 2 variant.
    */
   const file = elem('fileInput').files[0]
+  const chunkColl = new chunkCollector()
   let chunk = 1;
   console.log(`[FILE] ${[file.name, file.size, file.type, file.lastModified].join(' ')}`)
 
@@ -219,15 +219,40 @@ function sendFile() {
     const body_buffer = e.target.result
     const chunk_hash = await hashChunk(body_buffer)
     file_info.hash = chunk_hash
-    const header = JSON.stringify({ chunk: chunk++, ...file_info })
+    const header = JSON.stringify({ chunk, ...file_info })
 
     console.log('[HEADER LEN]', header.length)
     if (header.length > HEADER_LEN) throw new Error('File name it too long.');
 
     sendChannel.send(create_full_buffer(header, body_buffer))
+    chunkColl.add({
+      chunk_id: chunk_hash,
+      chunk_order: chunk++,
+      object: {
+        version: 1,
+        is_folder: false,
+        file_name: file.name.split('.')[0],
+        file_extention: file.name.split('.')[1],
+        file_size: file.size,
+        file_dir: '/work-files/',
+        modified: file.lastModified,
+        user: {
+          user_name: JSON.parse(localStorage.getItem('token')).username,
+          device: {
+            userAgent: window.navigator.userAgent
+          }
+        }
+      }
+    })
+
     offset += e.target.result.byteLength
     if (offset < file.size) {
       readSlice(offset)
+    }
+
+    // if this is the last chunk then send all metadata to the server
+    if (Math.ceil(file.size/chunkSize+1) === chunk) {
+      chunkColl.send()
     }
   })
 
@@ -301,7 +326,7 @@ function receiveFile() {
   let file = elem('recvFileName').value
   if (file.length == 0) return console.error('No file name');
 
-  let file_path = CURRENT_FILES.find(_file => _file.endsWith(file))
+  let file_path = Object.entries(CURRENT_FILES).find(([k, v]) => v+'.'+v[0].split('.')[1].endsWith(file))[0]
   sendChannel.send(JSON.stringify({
     isRecvFile: true,
     name: file_path
@@ -314,7 +339,7 @@ function receiveFile() {
   sendChannel.addEventListener('message', ({ data }) => { 
     if (typeof data === 'string') {
       chunks_info = JSON.parse(data)
-      console.log(chunks_info)
+      console.log('[CHUNK INFO]', chunks_info)
     } else if (data instanceof ArrayBuffer) {
       writer.write(bu2uInt8(data))
       chunks_writed++
@@ -338,4 +363,57 @@ function hashChunk(chunk) {
     .then(hashBuffer => Array.from(new Uint8Array(hashBuffer)))
     .then(hashArray => hashArray.map(b => b.toString(16).padStart(2, '0')).join(''))
     .then(hashHex => hashHex)
+}
+
+class chunkCollector {
+  constructor() {
+    this.chunk_meta_data = []
+  }
+
+  add(chunk_info) {
+    this.chunk_meta_data.push(chunk_info)
+  }
+
+  send() {  
+    let requestOptions = {
+      method: 'POST',
+      headers: auth_header(),
+      body: JSON.stringify({ data: this.chunk_meta_data })
+    }
+    
+    fetch('/files/add', requestOptions)
+      .then(res => {
+        console.log('[METADATA STATUS]', res.status)
+      })
+      .catch(console.error)
+  }
+}
+
+function deleteFile() {
+  let file = elem('dltFileName').value
+  if (file.length == 0) return console.error('No file name');
+  let file_path = Object.entries(CURRENT_FILES)
+    .find(([k, v]) => {
+      console.log(k)
+      return k+v[0].split('.')[1].endsWith('test.txt')
+    })
+
+  if (typeof file_path?.[0] != 'string') throw new Error('file not found');
+  
+  send_to_server({ delete: file_path?.[0] })
+
+  fetch('http://localhost/files/del', {
+    method: 'DELETE',
+    headers: auth_header(),
+    body: JSON.stringify({ chunks: CURRENT_FILES[file_path?.[0]].map(c => c.split('.')[2]) })
+  })
+  .then(console.log, console.error)
+}
+
+function auth_header() {
+  const { token } = JSON.parse(localStorage.getItem('token'))
+  let headers = new Headers()
+  headers.append("Content-Type", "application/json")
+  headers.append("Authorization", `Bearer ${token}`)
+  return headers
 }
