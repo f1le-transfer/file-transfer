@@ -12,11 +12,9 @@
 
 # Info
 
-<p>Documentation will be updated. 🙂</p>
+## This project is temporarily suspended. I need to learn some stuff.
 
-Current stage of the project: Developing System Design for file transfer and defining technologies.
-
-#### Frequent errors:
+## Frequent errors:
 
 Error while installing npm modules:
 
